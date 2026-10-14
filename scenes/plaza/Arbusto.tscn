@@ -1,0 +1,38 @@
+[gd_scene format=3 uid="uid://bjgr2pksnk12x"]
+
+[ext_resource type="Texture2D" uid="uid://bluhfdesq1whu" path="res://assets/sprites/tileSet.png" id="1"]
+[ext_resource type="Script" uid="uid://d3jq0scnh6sa8" path="res://scripts/plaza/Shadow.gd" id="2"]
+[ext_resource type="Shader" uid="uid://ddnkc6wynt50" path="res://assets/plaza/pixel_cutout.gdshader" id="3"]
+
+[sub_resource type="ShaderMaterial" id="Material"]
+shader = ExtResource("3")
+
+[sub_resource type="RectangleShape2D" id="Foot"]
+size = Vector2(24, 12)
+
+[node name="Arbusto" type="Node2D" unique_id=1406229491 groups=["obstaculos_plaza"]]
+texture_filter = 1
+metadata/huella = Rect2(-12, -8, 24, 12)
+
+[node name="Sombra" type="Node2D" parent="." unique_id=501937912]
+z_index = -1
+position = Vector2(6, 1)
+script = ExtResource("2")
+size = Vector2(30, 10)
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=2064662396]
+material = SubResource("Material")
+position = Vector2(4.5, -1.25)
+scale = Vector2(1.28125, 1.3125)
+texture = ExtResource("1")
+centered = false
+offset = Vector2(-16, -28)
+region_enabled = true
+region_rect = Rect2(0, 32, 32, 32)
+
+[node name="Cuerpo" type="StaticBody2D" parent="." unique_id=581874853]
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Cuerpo" unique_id=405590201]
+position = Vector2(-1, -12)
+shape = SubResource("Foot")

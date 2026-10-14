@@ -1,0 +1,174 @@
+extends Area2D
+
+@export var tipo_comercio: String = ""  # "tienda", "cafeteria" o "" (sin comercio)
+
+const MENU_CAFETERIA := [
+	{"producto": "Café", "precio": 15},
+	{"producto": "Chocolate caliente", "precio": 20},
+	{"producto": "Medialuna", "precio": 10},
+]
+
+var raton_encima: bool = false
+var pinguino_cerca: bool = false
+var panel_comercio: CanvasLayer = null
+
+@onready var animacion: AnimationPlayer = $AnimationPlayer
+
+func _ready() -> void:
+	mouse_entered.connect(_on_mouse_entered)
+	mouse_exited.connect(_on_mouse_exited)
+	body_entered.connect(_on_body_entered)
+	body_exited.connect(_on_body_exited)
+
+func _on_mouse_entered() -> void:
+	raton_encima = true
+	_actualizar_animacion()
+
+func _on_mouse_exited() -> void:
+	raton_encima = false
+	_actualizar_animacion()
+
+func _on_body_entered(body: Node2D) -> void:
+	pinguino_cerca = true
+	_actualizar_animacion()
+	if tipo_comercio != "":
+		print("[", name, "] cuerpo cerca: ", body.name, " | tiene_jugador=", EstadoJuego.tiene_jugador())
+		if EstadoJuego.tiene_jugador():
+			_abrir_panel()
+
+func _on_body_exited(_body: Node2D) -> void:
+	pinguino_cerca = false
+	_actualizar_animacion()
+	_cerrar_panel()
+
+func _actualizar_animacion() -> void:
+	if raton_encima or pinguino_cerca:
+		if not animacion.is_playing():
+			animacion.play("activar")
+	else:
+		animacion.stop()
+		animacion.seek(0.0, true)
+
+func _abrir_panel() -> void:
+	print("[", name, "] abriendo panel de ", tipo_comercio)
+	if panel_comercio != null:
+		return
+	panel_comercio = CanvasLayer.new()
+	get_tree().current_scene.add_child(panel_comercio)
+
+	var fondo := ColorRect.new()
+	fondo.color = Color(0, 0, 0, 0.6)
+	fondo.set_anchors_preset(Control.PRESET_FULL_RECT)
+	panel_comercio.add_child(fondo)
+
+	var caja := VBoxContainer.new()
+	caja.position = Vector2(460, 120)
+	caja.custom_minimum_size = Vector2(320, 0)
+	fondo.add_child(caja)
+
+	var fila_titulo := HBoxContainer.new()
+	caja.add_child(fila_titulo)
+
+	var titulo := Label.new()
+	titulo.text = "Tienda" if tipo_comercio == "tienda" else "Cafeteria"
+	fila_titulo.add_child(titulo)
+
+	var boton_cerrar := Button.new()
+	boton_cerrar.text = "Cerrar (X)"
+	boton_cerrar.pressed.connect(_cerrar_panel)
+	fila_titulo.add_child(boton_cerrar)
+
+	var monedas_label := Label.new()
+	monedas_label.text = "Tus monedas: %d" % EstadoJuego.monedas
+	caja.add_child(monedas_label)
+	EstadoJuego.monedas_cambiaron.connect(func(m):
+		if is_instance_valid(monedas_label):
+			monedas_label.text = "Tus monedas: %d" % m
+	)
+
+	var lista := VBoxContainer.new()
+	caja.add_child(lista)
+
+	if tipo_comercio == "tienda":
+		_cargar_productos_tienda(lista)
+	else:
+		_cargar_menu_cafeteria(lista)
+
+func _cerrar_panel() -> void:
+	if panel_comercio != null:
+		panel_comercio.queue_free()
+		panel_comercio = null
+
+func _cargar_productos_tienda(lista: VBoxContainer) -> void:
+	for hijo in lista.get_children():
+		hijo.queue_free()
+	var cargando := Label.new()
+	cargando.text = "Cargando..."
+	lista.add_child(cargando)
+	Api.tienda_listar(func(codigo, datos):
+		print("[", name, "] tienda_listar respondio codigo=", codigo, " datos=", datos)
+		if not is_instance_valid(lista):
+			return
+		for hijo in lista.get_children():
+			hijo.queue_free()
+		if codigo != 200 or datos == null or datos.size() == 0:
+			var vacio := Label.new()
+			vacio.text = "No hay productos todavia."
+			lista.add_child(vacio)
+			return
+		for producto in datos:
+			var fila := HBoxContainer.new()
+			lista.add_child(fila)
+			var info := Label.new()
+			info.text = "%s - $%s (stock: %d)" % [producto["nombre"], str(producto["precio"]), producto["stock"]]
+			fila.add_child(info)
+			var boton := Button.new()
+			boton.text = "Comprar"
+			boton.disabled = producto["stock"] <= 0 or EstadoJuego.monedas < producto["precio"]
+			boton.pressed.connect(func(): _comprar_producto(producto, lista))
+			fila.add_child(boton)
+	)
+
+func _comprar_producto(producto: Dictionary, lista: VBoxContainer) -> void:
+	var nuevas_monedas: int = EstadoJuego.monedas - int(producto["precio"])
+	var nuevo_stock: int = int(producto["stock"]) - 1
+	print("[", name, "] comprando ", producto["nombre"], " jugador_id=", EstadoJuego.jugador_id)
+	Api.jugador_actualizar_monedas(EstadoJuego.jugador_id, nuevas_monedas, func(codigo_j, _datos_j):
+		print("[", name, "] respuesta actualizar monedas codigo=", codigo_j)
+		if codigo_j != 200:
+			return
+		EstadoJuego.actualizar_monedas(nuevas_monedas)
+		Api.tienda_actualizar_stock(producto["id"], nuevo_stock, func(_codigo_p, _datos_p):
+			if is_instance_valid(lista):
+				_cargar_productos_tienda(lista)
+		)
+	)
+
+func _cargar_menu_cafeteria(lista: VBoxContainer) -> void:
+	for hijo in lista.get_children():
+		hijo.queue_free()
+	for item in MENU_CAFETERIA:
+		var fila := HBoxContainer.new()
+		lista.add_child(fila)
+		var info := Label.new()
+		info.text = "%s - $%d" % [item["producto"], item["precio"]]
+		fila.add_child(info)
+		var boton := Button.new()
+		boton.text = "Comprar"
+		boton.disabled = EstadoJuego.monedas < item["precio"]
+		boton.pressed.connect(func(): _comprar_cafeteria(item, lista))
+		fila.add_child(boton)
+
+func _comprar_cafeteria(item: Dictionary, lista: VBoxContainer) -> void:
+	var nuevas_monedas: int = EstadoJuego.monedas - int(item["precio"])
+	print("[", name, "] comprando ", item["producto"], " jugador_id=", EstadoJuego.jugador_id)
+	Api.jugador_actualizar_monedas(EstadoJuego.jugador_id, nuevas_monedas, func(codigo_j, _datos_j):
+		print("[", name, "] respuesta actualizar monedas codigo=", codigo_j)
+		if codigo_j != 200:
+			return
+		EstadoJuego.actualizar_monedas(nuevas_monedas)
+		Api.cafeteria_crear_pedido(item["producto"], 1, func(_codigo_p, _datos_p):
+			if is_instance_valid(lista):
+				_cargar_menu_cafeteria(lista)
+		)
+	)

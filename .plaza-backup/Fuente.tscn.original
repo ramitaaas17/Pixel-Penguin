@@ -1,0 +1,61 @@
+[gd_scene format=3 uid="uid://ceyqpgarchmfe"]
+
+[ext_resource type="Texture2D" path="res://fuente.png" id="1_fuente"]
+[ext_resource type="Script" path="res://EdificioAnimado.gd" id="2_script"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_eg8s3"]
+radius = 53.0
+height = 121.924286
+
+[sub_resource type="Animation" id="Animation_fuente"]
+resource_name = "activar"
+length = 0.6
+loop_mode = 1
+step = 0.08
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3, 0.6),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1.3, 1.3, 1.3, 1), Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_fuente"]
+_data = {
+&"activar": SubResource("Animation_fuente")
+}
+
+[node name="Fuente" type="Area2D" unique_id=476767677]
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("2_script")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=2035867182]
+position = Vector2(-11, 4)
+scale = Vector2(0.48177084, 0.51953125)
+texture = ExtResource("1_fuente")
+centered = false
+offset = Vector2(-192, -256)
+hframes = 4
+vframes = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=175880980]
+position = Vector2(3.5762787e-07, -51.000004)
+rotation = -1.6516887
+shape = SubResource("CapsuleShape2D_eg8s3")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=369554000]
+libraries/ = SubResource("AnimationLibrary_fuente")
+
+[node name="CuerpoSolido" type="StaticBody2D" parent="." unique_id=895752962]
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CuerpoSolido" unique_id=2145787838]
+position = Vector2(3.5762787e-07, -51.000004)
+rotation = -1.6516887
+shape = SubResource("CapsuleShape2D_eg8s3")

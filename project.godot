@@ -1,0 +1,52 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="Penguin"
+run/main_scene="res://scenes/plaza/Plaza.tscn"
+config/features=PackedStringArray("4.7", "GL Compatibility")
+config/icon="res://icon.svg"
+
+[autoload]
+
+PixelInterface="*res://scripts/ui/PixelInterface.gd"
+Api="*res://scripts/Api.gd"
+EstadoJuego="*res://scripts/EstadoJuego.gd"
+
+[display]
+
+window/size/viewport_width=960
+window/size/viewport_height=600
+window/size/window_width_override=960
+window/size/window_height_override=600
+window/stretch/mode="viewport"
+window/stretch/scale_mode="integer"
+
+[gui]
+
+fonts/dynamic_fonts/use_oversampling=false
+theme/default_font_antialiasing=0
+theme/default_font_hinting=0
+theme/default_font_subpixel_positioning=0
+theme/custom="res://assets/ui/pixel_theme.tres"
+
+[physics]
+
+3d/physics_engine="Jolt Physics"
+
+[rendering]
+
+textures/canvas_textures/default_texture_filter=0
+rendering_device/driver.windows="d3d12"
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+environment/defaults/default_clear_color=Color(0.64, 0.77, 0.81, 1)
+2d/snap/snap_2d_transforms_to_pixel=true

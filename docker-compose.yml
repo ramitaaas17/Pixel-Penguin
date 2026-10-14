@@ -1,0 +1,123 @@
+version: "3.9"
+
+services:
+  db-jugadores:
+    image: postgres:16-alpine
+    container_name: db-jugadores
+    environment:
+      POSTGRES_USER: jugadoresapp
+      POSTGRES_PASSWORD: jugadoresapp123
+      POSTGRES_DB: jugadoresdb
+    volumes:
+      - ./backend/jugadores/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    networks:
+      - appnet
+
+  jugadores-service:
+    build: ./backend/jugadores
+    container_name: jugadores-service
+    environment:
+      DB_HOST: db-jugadores
+      DB_PORT: 5432
+      DB_USER: jugadoresapp
+      DB_PASSWORD: jugadoresapp123
+      DB_NAME: jugadoresdb
+    depends_on:
+      - db-jugadores
+    networks:
+      - appnet
+
+  db-tienda:
+    image: postgres:16-alpine
+    container_name: db-tienda
+    environment:
+      POSTGRES_USER: tiendaapp
+      POSTGRES_PASSWORD: tiendaapp123
+      POSTGRES_DB: tiendadb
+    volumes:
+      - ./backend/tienda/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    networks:
+      - appnet
+
+  tienda-service-1:
+    build: ./backend/tienda
+    container_name: tienda-service-1
+    environment:
+      DB_HOST: db-tienda
+      DB_PORT: 5432
+      DB_USER: tiendaapp
+      DB_PASSWORD: tiendaapp123
+      DB_NAME: tiendadb
+      INSTANCE_NAME: tienda-service-1
+    depends_on:
+      - db-tienda
+    networks:
+      - appnet
+
+  tienda-service-2:
+    build: ./backend/tienda
+    container_name: tienda-service-2
+    environment:
+      DB_HOST: db-tienda
+      DB_PORT: 5432
+      DB_USER: tiendaapp
+      DB_PASSWORD: tiendaapp123
+      DB_NAME: tiendadb
+      INSTANCE_NAME: tienda-service-2
+    depends_on:
+      - db-tienda
+    networks:
+      - appnet
+
+  db-cafeteria:
+    image: postgres:16-alpine
+    container_name: db-cafeteria
+    environment:
+      POSTGRES_USER: cafeteriaapp
+      POSTGRES_PASSWORD: cafeteriaapp123
+      POSTGRES_DB: cafeteriadb
+    volumes:
+      - ./backend/cafeteria/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    networks:
+      - appnet
+
+  cafeteria-service:
+    build: ./backend/cafeteria
+    container_name: cafeteria-service
+    environment:
+      DB_HOST: db-cafeteria
+      DB_PORT: 5432
+      DB_USER: cafeteriaapp
+      DB_PASSWORD: cafeteriaapp123
+      DB_NAME: cafeteriadb
+    depends_on:
+      - db-cafeteria
+    networks:
+      - appnet
+
+  middleware:
+    build: ./middleware
+    container_name: middleware
+    ports:
+      - "8000:8000"
+    depends_on:
+      - jugadores-service
+      - tienda-service-1
+      - tienda-service-2
+      - cafeteria-service
+    networks:
+      - appnet
+
+  frontend:
+    build: ./frontend
+    container_name: frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - middleware
+    networks:
+      - appnet
+
+networks:
+  appnet:
+    driver: bridge

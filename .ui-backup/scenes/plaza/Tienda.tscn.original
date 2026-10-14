@@ -1,0 +1,71 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/tienda.png" id="1"]
+[ext_resource type="Script" path="res://scripts/plaza/PlazaBuilding.gd" id="2"]
+[ext_resource type="Shader" path="res://assets/plaza/pixel_cutout.gdshader" id="3"]
+[ext_resource type="Script" path="res://scripts/plaza/Shadow.gd" id="4"]
+
+[sub_resource type="ShaderMaterial" id="Material"]
+shader = ExtResource("3")
+[sub_resource type="RectangleShape2D" id="Foot"]
+size = Vector2(152, 64)
+[sub_resource type="RectangleShape2D" id="Door"]
+size = Vector2(64, 34)
+
+[node name="Tienda" type="Area2D" groups=["obstaculos_plaza"]]
+texture_filter = 1
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("2")
+titulo = "Tienda"
+tipo_comercio = "tienda"
+fotogramas = 8
+fps = 7.0
+animado = false
+metadata/huella = Rect2(-76, -60, 152, 64)
+
+[node name="Sombra" type="Node2D" parent="."]
+position = Vector2(12, -8)
+z_index = -1
+script = ExtResource("4")
+size = Vector2(172, 57.6)
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+material = SubResource("Material")
+texture = ExtResource("1")
+scale = Vector2(0.5, 0.5)
+centered = false
+offset = Vector2(-192, -475)
+hframes = 4
+vframes = 2
+frame = 7
+
+[node name="CuerpoSolido" type="StaticBody2D" parent="."]
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CuerpoSolido"]
+position = Vector2(0, -28)
+shape = SubResource("Foot")
+
+[node name="ZonaDeteccion" type="CollisionShape2D" parent="."]
+position = Vector2(0, 23)
+shape = SubResource("Door")
+
+[node name="Entrada" type="Marker2D" parent="."]
+position = Vector2(0, 30)
+
+[node name="Indicacion" type="Label" parent="."]
+offset_left = -95.0
+offset_top = 10.0
+offset_right = 95.0
+offset_bottom = 31.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.16, 0.27, 0.32, 1)
+theme_override_colors/font_outline_color = Color(0.96, 0.98, 0.96, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 12
+text = "E · Tienda"
+horizontal_alignment = 1
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]

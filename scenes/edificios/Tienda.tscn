@@ -1,0 +1,88 @@
+[gd_scene format=3 uid="uid://ct4qy0k8jn5qt"]
+
+[ext_resource type="Texture2D" uid="uid://du0yc8ngur3ua" path="res://assets/sprites/tienda.png" id="1_tienda"]
+[ext_resource type="Script" uid="uid://8v5agsri6c1g" path="res://scripts/EdificioAnimado.gd" id="2_script"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_tienda"]
+size = Vector2(110.52049, 128.02206)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_zona_tienda"]
+radius = 88.02273
+
+[sub_resource type="Animation" id="Animation_tienda"]
+resource_name = "activar"
+length = 0.6
+loop_mode = 1
+step = 0.15
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3, 0.6),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1.3, 1.3, 1.3, 1), Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_tienda"]
+_data = {
+&"activar": SubResource("Animation_tienda")
+}
+
+[node name="Tienda" type="Area2D" unique_id=1190087512]
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("2_script")
+tipo_comercio = "tienda"
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=168331191]
+position = Vector2(11.000009, 21)
+scale = Vector2(0.5625, 0.51562506)
+texture = ExtResource("1_tienda")
+centered = false
+offset = Vector2(-192, -512)
+hframes = 4
+vframes = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2099871144]
+position = Vector2(26.999998, -75)
+rotation = -0.4730867
+shape = SubResource("RectangleShape2D_tienda")
+
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="." unique_id=138279004]
+position = Vector2(15.000006, -120)
+rotation = -0.9069082
+shape = SubResource("RectangleShape2D_tienda")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="." unique_id=495511359]
+position = Vector2(-8.999998, -69)
+rotation = -1.1481564
+shape = SubResource("RectangleShape2D_tienda")
+
+[node name="ZonaDeteccion" type="CollisionShape2D" parent="." unique_id=704227775]
+position = Vector2(11, -88)
+shape = SubResource("CircleShape2D_zona_tienda")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=975502609]
+libraries/ = SubResource("AnimationLibrary_tienda")
+
+[node name="CuerpoSolido" type="StaticBody2D" parent="." unique_id=1469520754]
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CuerpoSolido" unique_id=1615231633]
+position = Vector2(26.999998, -75)
+rotation = -0.4730867
+shape = SubResource("RectangleShape2D_tienda")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="CuerpoSolido" unique_id=342299716]
+position = Vector2(15.000006, -120)
+rotation = -0.9069082
+shape = SubResource("RectangleShape2D_tienda")
+
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="CuerpoSolido" unique_id=1448412342]
+position = Vector2(-8.999998, -69)
+rotation = -1.1481564
+shape = SubResource("RectangleShape2D_tienda")

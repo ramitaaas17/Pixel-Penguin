@@ -1,0 +1,353 @@
+extends "res://scripts/Mapa.gd"
+const PLAYER_SCRIPT := preload("res://scripts/plaza/PlazaPlayer.gd")
+const NPC_SCRIPT := preload("res://scripts/plaza/PlazaNPC.gd")
+const SHADOW := preload("res://scripts/plaza/Shadow.gd")
+const PLAYER_SCENE := preload("res://scenes/personaje/CaminarDerecha.tscn")
+const MAX_NPC := 12
+var caminos := AStarGrid2D.new()
+var bloqueos: Array[Rect2] = []
+var aviso: Label
+var aviso_timer: Timer
+var interfaz: CanvasLayer
+
+func _ready() -> void:
+    _preparar_navegacion()
+    var player := PLAYER_SCENE.instantiate()
+    player.name = "CaminarDerecha"
+    player.set_script(PLAYER_SCRIPT)
+    player.position = Vector2(-32, 148)
+    player.add_to_group("jugador_local")
+    _normalizar_personaje(player)
+    player.get_node("Camara").enabled = false
+    add_child(player)
+    _crear_interfaz()
+    super._ready()
+    if "--plaza-preview" in OS.get_cmdline_user_args():
+        _pasear()
+    for arg in OS.get_cmdline_user_args():
+        if arg.begins_with("--plaza-capture="):
+            _capturar.call_deferred(arg.trim_prefix("--plaza-capture="))
+
+func _normalizar_personaje(personaje: Node2D) -> void:
+    var dibujo := personaje.get_node("Sprite2D") as Sprite2D
+    dibujo.position = Vector2.ZERO
+    dibujo.scale = Vector2(0.75, 0.75)
+    dibujo.offset = Vector2(-32, -59)
+    dibujo.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+    var collider := personaje.get_node("CollisionShape2D") as CollisionShape2D
+    var forma := RectangleShape2D.new()
+    forma.size = Vector2(16, 8)
+    collider.shape = forma
+    collider.position = Vector2(0, -3)
+    var sombra := Node2D.new()
+    sombra.set_script(SHADOW)
+    sombra.size = Vector2(25, 9)
+    sombra.position = Vector2(3, 0)
+    sombra.z_index = -1
+    personaje.add_child(sombra)
+
+func _preparar_navegacion() -> void:
+    for obj in get_tree().get_nodes_in_group("obstaculos_plaza"):
+        var rect: Rect2 = obj.get_meta("huella", Rect2())
+        rect.position += obj.global_position
+        bloqueos.append(rect.grow(10))
+    caminos.region = Rect2i(-58, -30, 116, 61)
+    caminos.cell_size = Vector2(8, 8)
+    caminos.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_ONLY_IF_NO_OBSTACLES
+    caminos.default_compute_heuristic = AStarGrid2D.HEURISTIC_OCTILE
+    caminos.default_estimate_heuristic = AStarGrid2D.HEURISTIC_OCTILE
+    caminos.update()
+    for x in range(-58, 58):
+        for y in range(-30, 31):
+            var id := Vector2i(x, y)
+            var p := Vector2(id) * 8
+            var solid := ((p - Vector2(0, 5)) / Vector2(410, 165)).length_squared() > 1.0
+            if not solid:
+                for rect in bloqueos:
+                    if rect.has_point(p):
+                        solid = true
+                        break
+            caminos.set_point_solid(id, solid)
+
+    # Remove tiny pockets trapped between perimeter props and the island edge.
+    # Every selectable destination must belong to the same reachable plaza.
+    var abiertos: Array[Vector2i] = [Vector2i(-4, 18)]
+    var visitados: Dictionary = {Vector2i(-4, 18): true}
+    var cursor := 0
+    var vecinos: Array[Vector2i] = [Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN]
+    while cursor < abiertos.size():
+        var actual := abiertos[cursor]
+        cursor += 1
+        for paso in vecinos:
+            var siguiente := actual + paso
+            if not caminos.region.has_point(siguiente) or visitados.has(siguiente):
+                continue
+            if caminos.is_point_solid(siguiente):
+                continue
+            visitados[siguiente] = true
+            abiertos.append(siguiente)
+    for x in range(-58, 58):
+        for y in range(-30, 31):
+            var id := Vector2i(x, y)
+            if not visitados.has(id):
+                caminos.set_point_solid(id, true)
+
+func _celda_libre(p: Vector2) -> Vector2i:
+    var id := Vector2i((p / 8.0).round())
+    id.x = clampi(id.x, -57, 56)
+    id.y = clampi(id.y, -29, 29)
+    if not caminos.is_point_solid(id):
+        return id
+    var mejor := Vector2i.ZERO
+    var distancia := INF
+    # Search the finite plaza; clicks on roofs/outside the island land at its edge.
+    for x in range(-52, 53):
+        for y in range(-24, 25):
+            var c := Vector2i(x, y)
+            if caminos.is_point_solid(c):
+                continue
+            var d := (Vector2(c) * 8).distance_squared_to(p)
+            if d < distancia:
+                distancia = d
+                mejor = c
+    return mejor
+
+func ruta_hacia(origen: Vector2, objetivo: Vector2) -> PackedVector2Array:
+    return caminos.get_point_path(_celda_libre(origen), _celda_libre(objetivo))
+
+func _crear_interfaz() -> void:
+    interfaz = CanvasLayer.new()
+    interfaz.name = "InterfazPlaza"
+    add_child(interfaz)
+    var root := Control.new()
+    root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+    root.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    interfaz.add_child(root)
+    var heading := Label.new()
+    heading.text = "PLAZA DEL DESHIELO"
+    heading.position = Vector2(28, 20)
+    heading.add_theme_font_size_override("font_size", 19)
+    heading.add_theme_color_override("font_color", Color("#274552"))
+    root.add_child(heading)
+    var subtitle := Label.new()
+    subtitle.text = "Un pequeño lugar para encontrarnos."
+    subtitle.position = Vector2(29, 46)
+    subtitle.add_theme_font_size_override("font_size", 12)
+    subtitle.add_theme_color_override("font_color", Color("#486876"))
+    root.add_child(subtitle)
+    var help := Label.new()
+    help.text = "CLIC para caminar     ·     E junto a una entrada     ·     ESC para cerrar"
+    help.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_LEFT)
+    help.position = Vector2(28, -31)
+    help.add_theme_font_size_override("font_size", 12)
+    help.add_theme_color_override("font_color", Color("#355865"))
+    root.add_child(help)
+    var elegir := Button.new()
+    elegir.text = "Elegir jugador"
+    elegir.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
+    elegir.position = Vector2(-166, 22)
+    elegir.custom_minimum_size = Vector2(138, 34)
+    elegir.pressed.connect(func():
+        if not is_instance_valid(seleccion_ui):
+            jugador_nodo.habilitado = false
+            jugador_nodo.ruta.clear()
+            _mostrar_seleccion_jugador()
+    )
+    root.add_child(elegir)
+    _estilo_boton(elegir)
+    aviso = Label.new()
+    aviso.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM)
+    aviso.position = Vector2(-250, -68)
+    aviso.size = Vector2(500, 24)
+    aviso.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+    aviso.add_theme_color_override("font_color", Color("#274552"))
+    aviso.add_theme_font_size_override("font_size", 14)
+    root.add_child(aviso)
+    aviso_timer = Timer.new()
+    aviso_timer.one_shot = true
+    aviso_timer.wait_time = 4
+    aviso_timer.timeout.connect(func(): aviso.text = "")
+    add_child(aviso_timer)
+
+func _estilo_boton(boton: Button) -> void:
+    var normal := StyleBoxFlat.new()
+    normal.bg_color = Color("#315666")
+    normal.set_corner_radius_all(7)
+    normal.content_margin_left = 16
+    normal.content_margin_right = 16
+    normal.content_margin_top = 9
+    normal.content_margin_bottom = 9
+    boton.add_theme_stylebox_override("normal", normal)
+    var hover := normal.duplicate() as StyleBoxFlat
+    hover.bg_color = Color("#447687")
+    boton.add_theme_stylebox_override("hover", hover)
+    boton.add_theme_stylebox_override("pressed", hover)
+    boton.add_theme_font_size_override("font_size", 13)
+    boton.add_theme_color_override("font_color", Color("#f3f5ed"))
+
+func _mostrar_seleccion_jugador() -> void:
+    seleccion_ui = CanvasLayer.new()
+    seleccion_ui.name = "SeleccionJugador"
+    seleccion_ui.layer = 5
+    add_child(seleccion_ui)
+    var fondo := ColorRect.new()
+    fondo.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+    fondo.color = Color(0.10, 0.18, 0.23, 0.45)
+    seleccion_ui.add_child(fondo)
+    var center := CenterContainer.new()
+    center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+    fondo.add_child(center)
+    var panel := PanelContainer.new()
+    panel.custom_minimum_size = Vector2(360, 0)
+    center.add_child(panel)
+    var style := StyleBoxFlat.new()
+    style.bg_color = Color("#f3f5ed")
+    style.set_corner_radius_all(12)
+    style.content_margin_left = 28
+    style.content_margin_right = 28
+    style.content_margin_top = 24
+    style.content_margin_bottom = 24
+    panel.add_theme_stylebox_override("panel", style)
+    var content := VBoxContainer.new()
+    content.add_theme_constant_override("separation", 14)
+    panel.add_child(content)
+    var title := Label.new()
+    title.text = "Nos vemos en la plaza"
+    title.add_theme_font_size_override("font_size", 22)
+    title.add_theme_color_override("font_color", Color("#274552"))
+    content.add_child(title)
+    var note := Label.new()
+    note.text = "Elige tu pingüino o entra a dar un paseo."
+    note.add_theme_color_override("font_color", Color("#486876"))
+    note.add_theme_font_size_override("font_size", 13)
+    content.add_child(note)
+    var scroll := ScrollContainer.new()
+    scroll.custom_minimum_size = Vector2(320, 140)
+    content.add_child(scroll)
+    caja_seleccion = VBoxContainer.new()
+    caja_seleccion.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    caja_seleccion.add_theme_constant_override("separation", 7)
+    scroll.add_child(caja_seleccion)
+    titulo_seleccion = Label.new()
+    titulo_seleccion.text = "Jugadores"
+    titulo_seleccion.add_theme_color_override("font_color", Color("#486876"))
+    caja_seleccion.add_child(titulo_seleccion)
+    var paseo := Button.new()
+    paseo.text = "Pasear por la plaza"
+    _estilo_boton(paseo)
+    paseo.pressed.connect(_pasear)
+    content.add_child(paseo)
+    if "--plaza-preview" not in OS.get_cmdline_user_args():
+        _cargar_lista_seleccion()
+
+func _cargar_lista_seleccion() -> void:
+    var target := caja_seleccion
+    for child in target.get_children():
+        if child != titulo_seleccion:
+            child.queue_free()
+    var cargando := Label.new()
+    cargando.text = "Buscando jugadores..."
+    cargando.add_theme_color_override("font_color", Color("#486876"))
+    target.add_child(cargando)
+    Api.jugadores_listar(func(codigo, datos):
+        if not is_instance_valid(target):
+            return
+        if is_instance_valid(cargando):
+            cargando.queue_free()
+        if codigo != 200 or not datos is Array or datos.is_empty():
+            var vacio := Label.new()
+            vacio.text = "Puedes pasear mientras no haya jugadores."
+            vacio.add_theme_font_size_override("font_size", 12)
+            vacio.add_theme_color_override("font_color", Color("#486876"))
+            target.add_child(vacio)
+            var retry := Button.new()
+            retry.text = "Volver a buscar"
+            _estilo_boton(retry)
+            retry.pressed.connect(_cargar_lista_seleccion)
+            target.add_child(retry)
+            return
+        for registro in datos:
+            var boton := Button.new()
+            boton.text = str(registro.get("nombre", "Pingüino"))
+            _estilo_boton(boton)
+            boton.pressed.connect(func():
+                EstadoJuego.seleccionar_jugador(int(registro["id"]), str(registro["nombre"]), int(registro["monedas"]))
+                _pasear()
+            )
+            target.add_child(boton)
+    )
+
+func _pasear() -> void:
+    if is_instance_valid(seleccion_ui):
+        seleccion_ui.queue_free()
+    jugador_nodo.habilitado = true
+
+func _crear_hud() -> void:
+    if is_instance_valid(hud):
+        hud.queue_free()
+    hud = CanvasLayer.new()
+    add_child(hud)
+    hud_label = Label.new()
+    hud_label.position = Vector2(29, 65)
+    hud_label.add_theme_color_override("font_color", Color("#355865"))
+    hud_label.add_theme_font_size_override("font_size", 12)
+    hud.add_child(hud_label)
+    _actualizar_hud()
+    if not EstadoJuego.monedas_cambiaron.is_connected(_monedas_cambiaron):
+        EstadoJuego.monedas_cambiaron.connect(_monedas_cambiaron)
+
+func _monedas_cambiaron(_valor: int) -> void:
+    _actualizar_hud()
+
+func mostrar_aviso(texto: String) -> void:
+    aviso.text = texto
+    aviso_timer.start()
+
+func _actualizar_jugadores() -> void:
+    Api.jugadores_listar(func(codigo, datos):
+        if codigo != 200 or not datos is Array:
+            return
+        var presentes: Array[int] = []
+        for registro in datos:
+            var id := int(registro["id"])
+            if id == EstadoJuego.jugador_id:
+                continue
+            presentes.append(id)
+        for id in pinguinos_npc.keys():
+            if id not in presentes:
+                if is_instance_valid(pinguinos_npc[id]):
+                    pinguinos_npc[id].queue_free()
+                pinguinos_npc.erase(id)
+        for registro in datos:
+            var id := int(registro["id"])
+            if id == EstadoJuego.jugador_id or pinguinos_npc.has(id) or pinguinos_npc.size() >= MAX_NPC:
+                continue
+            _spawn_npc(id, registro)
+    )
+
+func _spawn_npc(id: int, registro: Dictionary) -> void:
+    var npc := ESCENA_NPC.instantiate()
+    npc.set_script(NPC_SCRIPT)
+    _normalizar_personaje(npc)
+    var a := float(pinguinos_npc.size()) * 2.39996
+    var point := Vector2(cos(a) * 155, 90 + sin(a) * 45)
+    npc.position = Vector2(_celda_libre(point)) * 8
+    add_child(npc)
+    npc.set_datos(id, str(registro["nombre"]), int(registro["monedas"]))
+    var comercios: Array = []
+    for edificio in [$Tienda, $Cafeteria]:
+        comercios.append({"pos": edificio.get_node("Entrada").global_position, "tipo": edificio.tipo_comercio})
+    npc.set_comercios(comercios)
+    var label := npc.get_node("Nombre") as Label
+    label.position = Vector2(-40, -54)
+    label.size = Vector2(80, 16)
+    label.add_theme_color_override("font_color", Color("#274552"))
+    label.add_theme_font_size_override("font_size", 10)
+    pinguinos_npc[id] = npc
+
+func _capturar(path: String) -> void:
+    await get_tree().create_timer(1.0).timeout
+    await RenderingServer.frame_post_draw
+    var err := get_viewport().get_texture().get_image().save_png(path)
+    print("PLAZA_CAPTURE ", path, " status=", err)
+    get_tree().quit(0 if err == OK else 1)

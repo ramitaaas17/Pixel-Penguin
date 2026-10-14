@@ -1,0 +1,94 @@
+[gd_scene format=3 uid="uid://bdqvm6ej2vcyn"]
+
+[ext_resource type="Texture2D" uid="uid://do3q5x6ig2bhx" path="res://assets/sprites/cafeteria.png" id="1_cafeteria"]
+[ext_resource type="Script" uid="uid://8v5agsri6c1g" path="res://scripts/EdificioAnimado.gd" id="2_script"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_cafeteria"]
+size = Vector2(132.86615, 119.92992)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_l0ucl"]
+radius = 53.851643
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_8mlh3"]
+height = 126.13793
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_zona_cafeteria"]
+radius = 103.947105
+
+[sub_resource type="Animation" id="Animation_cafeteria"]
+resource_name = "activar"
+length = 0.6
+loop_mode = 1
+step = 0.08
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3, 0.6),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1.3, 1.3, 1.3, 1), Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_cafeteria"]
+_data = {
+&"activar": SubResource("Animation_cafeteria")
+}
+
+[node name="Cafeteria" type="Area2D" unique_id=1538170857]
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("2_script")
+tipo_comercio = "cafeteria"
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=408642143]
+position = Vector2(-17.250008, -3.9999998)
+scale = Vector2(0.85546875, 0.86718744)
+texture = ExtResource("1_cafeteria")
+centered = false
+offset = Vector2(-192, -256)
+hframes = 4
+vframes = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1918566191]
+position = Vector2(-5.4523916, -81.076385)
+rotation = -0.30710793
+shape = SubResource("RectangleShape2D_cafeteria")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="." unique_id=823420165]
+position = Vector2(-62.000004, -60.000008)
+rotation = -0.30710793
+shape = SubResource("CircleShape2D_l0ucl")
+
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="." unique_id=2058304940]
+position = Vector2(-47.999996, -144)
+rotation = -2.004398
+shape = SubResource("CapsuleShape2D_8mlh3")
+
+[node name="ZonaDeteccion" type="CollisionShape2D" parent="." unique_id=1349374608]
+position = Vector2(-38, -95)
+shape = SubResource("CircleShape2D_zona_cafeteria")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=709184348]
+libraries/ = SubResource("AnimationLibrary_cafeteria")
+
+[node name="CuerpoSolido" type="StaticBody2D" parent="." unique_id=1327858427]
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CuerpoSolido" unique_id=95943785]
+position = Vector2(-5.4523916, -81.076385)
+rotation = -0.30710793
+shape = SubResource("RectangleShape2D_cafeteria")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="CuerpoSolido" unique_id=1810162922]
+position = Vector2(-62.000004, -60.000008)
+rotation = -0.30710793
+shape = SubResource("CircleShape2D_l0ucl")
+
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="CuerpoSolido" unique_id=1564227378]
+position = Vector2(-47.999996, -144)
+rotation = -2.004398
+shape = SubResource("CapsuleShape2D_8mlh3")

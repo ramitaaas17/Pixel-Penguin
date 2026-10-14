@@ -1,0 +1,132 @@
+[gd_scene format=3 uid="uid://c20ov02saaleq"]
+
+[ext_resource type="PackedScene" uid="uid://bjgr2pksnk12x" path="res://scenes/plaza/Arbusto.tscn" id="Arbusto"]
+[ext_resource type="PackedScene" path="res://scenes/plaza/Banco.tscn" id="Banco"]
+[ext_resource type="PackedScene" path="res://scenes/plaza/Cafeteria.tscn" id="Cafeteria"]
+[ext_resource type="PackedScene" path="res://scenes/plaza/Club.tscn" id="Club"]
+[ext_resource type="PackedScene" path="res://scenes/plaza/Farol.tscn" id="Farol"]
+[ext_resource type="PackedScene" path="res://scenes/plaza/Fuente.tscn" id="Fuente"]
+[ext_resource type="Script" uid="uid://df3js8trbd35v" path="res://scripts/plaza/Plaza.gd" id="main"]
+[ext_resource type="PackedScene" path="res://scenes/plaza/Pino.tscn" id="Pino"]
+[ext_resource type="Script" uid="uid://3pubcit0qose" path="res://scripts/plaza/Terrain.gd" id="terrain"]
+[ext_resource type="PackedScene" path="res://scenes/plaza/Tienda.tscn" id="Tienda"]
+
+[node name="Plaza" type="Node2D" unique_id=1573016754]
+y_sort_enabled = true
+texture_filter = 1
+script = ExtResource("main")
+
+[node name="Terreno" type="Node2D" parent="." unique_id=1350070490]
+z_index = -10
+script = ExtResource("terrain")
+
+[node name="CamaraPlaza" type="Camera2D" parent="." unique_id=1732851874]
+position = Vector2(0, -45)
+
+[node name="Cafeteria" parent="." unique_id=342970755 instance=ExtResource("Cafeteria")]
+position = Vector2(-288, -8)
+
+[node name="Tienda" parent="." unique_id=1259948063 instance=ExtResource("Tienda")]
+position = Vector2(334, 33)
+
+[node name="Club" parent="." unique_id=506554451 instance=ExtResource("Club")]
+position = Vector2(0, -115)
+
+[node name="Fuente" parent="." unique_id=230565862 instance=ExtResource("Fuente")]
+position = Vector2(-27, 85)
+
+[node name="Pino1" parent="." unique_id=1978989850 instance=ExtResource("Pino")]
+position = Vector2(-359, -68)
+
+[node name="Pino2" parent="." unique_id=679964710 instance=ExtResource("Pino")]
+position = Vector2(-320, -127)
+
+[node name="Pino3" parent="." unique_id=1426356993 instance=ExtResource("Pino")]
+position = Vector2(-170, -158)
+
+[node name="Pino4" parent="." unique_id=963405342 instance=ExtResource("Pino")]
+position = Vector2(-114, -155)
+
+[node name="Pino5" parent="." unique_id=218293874 instance=ExtResource("Pino")]
+position = Vector2(136, -153)
+
+[node name="Pino6" parent="." unique_id=336885910 instance=ExtResource("Pino")]
+position = Vector2(187, -151)
+
+[node name="Pino8" parent="." unique_id=1956290218 instance=ExtResource("Pino")]
+position = Vector2(229, 127)
+
+[node name="Pino9" parent="." unique_id=367376362 instance=ExtResource("Pino")]
+position = Vector2(-364, 65)
+
+[node name="Pino10" parent="." unique_id=216010671 instance=ExtResource("Pino")]
+position = Vector2(-308, 132)
+
+[node name="Pino11" parent="." unique_id=2033229220 instance=ExtResource("Pino")]
+position = Vector2(359, 70)
+
+[node name="Pino12" parent="." unique_id=1004426039 instance=ExtResource("Pino")]
+position = Vector2(288, 146)
+
+[node name="Banco13" parent="." unique_id=1400007162 instance=ExtResource("Banco")]
+position = Vector2(-227, 80)
+
+[node name="Banco16" parent="." unique_id=816066235 instance=ExtResource("Banco")]
+position = Vector2(-190, 98)
+
+[node name="Farol18" parent="." unique_id=2141852754 instance=ExtResource("Farol")]
+position = Vector2(-194, -52)
+
+[node name="Farol19" parent="." unique_id=530841592 instance=ExtResource("Farol")]
+position = Vector2(86, -116)
+
+[node name="Farol23" parent="." unique_id=1475938130 instance=ExtResource("Farol")]
+position = Vector2(-155, 109)
+
+[node name="Farol24" parent="." unique_id=1289029533 instance=ExtResource("Farol")]
+position = Vector2(235, -45)
+
+[node name="Arbusto25" parent="." unique_id=486512113 instance=ExtResource("Arbusto")]
+position = Vector2(-352, -22)
+
+[node name="Arbusto26" parent="." unique_id=72891144 instance=ExtResource("Arbusto")]
+position = Vector2(-325, 3)
+
+[node name="Arbusto27" parent="." unique_id=236243145 instance=ExtResource("Arbusto")]
+position = Vector2(-305, 103)
+
+[node name="Arbusto28" parent="." unique_id=1919944437 instance=ExtResource("Arbusto")]
+position = Vector2(-271, 135)
+
+[node name="Arbusto29" parent="." unique_id=1576322970 instance=ExtResource("Arbusto")]
+position = Vector2(-115, -151)
+
+[node name="Arbusto30" parent="." unique_id=1931371383 instance=ExtResource("Arbusto")]
+position = Vector2(99, -145)
+
+[node name="Arbusto31" parent="." unique_id=77844945 instance=ExtResource("Arbusto")]
+position = Vector2(159, -121)
+
+[node name="Arbusto32" parent="." unique_id=278858592 instance=ExtResource("Arbusto")]
+position = Vector2(352, -35)
+
+[node name="Arbusto33" parent="." unique_id=2060664245 instance=ExtResource("Arbusto")]
+position = Vector2(366, 25)
+
+[node name="Arbusto34" parent="." unique_id=1615293090 instance=ExtResource("Arbusto")]
+position = Vector2(313, 103)
+
+[node name="Arbusto35" parent="." unique_id=1134453631 instance=ExtResource("Arbusto")]
+position = Vector2(285, 133)
+
+[node name="Arbusto36" parent="." unique_id=362691012 instance=ExtResource("Arbusto")]
+position = Vector2(-151, 162)
+
+[node name="Arbusto37" parent="." unique_id=1799150934 instance=ExtResource("Arbusto")]
+position = Vector2(-120, 168)
+
+[node name="Arbusto38" parent="." unique_id=973626129 instance=ExtResource("Arbusto")]
+position = Vector2(136, 169)
+
+[node name="Arbusto39" parent="." unique_id=1555480630 instance=ExtResource("Arbusto")]
+position = Vector2(166, 159)

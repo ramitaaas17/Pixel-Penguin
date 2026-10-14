@@ -1,0 +1,14 @@
+[
+  {
+    "prefix": "/jugadores",
+    "targets": ["http://jugadores-service:8080"]
+  },
+  {
+    "prefix": "/tienda",
+    "targets": ["http://tienda-service-1:8080", "http://tienda-service-2:8080"]
+  },
+  {
+    "prefix": "/cafeteria",
+    "targets": ["http://cafeteria-service:8080"]
+  }
+]

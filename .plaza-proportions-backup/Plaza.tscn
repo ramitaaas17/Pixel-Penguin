@@ -1,0 +1,153 @@
+[gd_scene format=3]
+[ext_resource type="Script" path="res://scripts/plaza/Plaza.gd" id="main"]
+[ext_resource type="Script" path="res://scripts/plaza/Terrain.gd" id="terrain"]
+[ext_resource type="PackedScene" path="res://scenes/plaza/Cafeteria.tscn" id="Cafeteria"]
+[ext_resource type="PackedScene" path="res://scenes/plaza/Tienda.tscn" id="Tienda"]
+[ext_resource type="PackedScene" path="res://scenes/plaza/Club.tscn" id="Club"]
+[ext_resource type="PackedScene" path="res://scenes/plaza/Fuente.tscn" id="Fuente"]
+[ext_resource type="PackedScene" path="res://scenes/plaza/Pino.tscn" id="Pino"]
+[ext_resource type="PackedScene" path="res://scenes/plaza/Arbusto.tscn" id="Arbusto"]
+[ext_resource type="PackedScene" path="res://scenes/plaza/Banco.tscn" id="Banco"]
+[ext_resource type="PackedScene" path="res://scenes/plaza/Farol.tscn" id="Farol"]
+
+[node name="Plaza" type="Node2D"]
+y_sort_enabled = true
+texture_filter = 1
+script = ExtResource("main")
+
+[node name="Terreno" type="Node2D" parent="."]
+z_index = -10
+script = ExtResource("terrain")
+
+[node name="CamaraPlaza" type="Camera2D" parent="."]
+position = Vector2(0, -45)
+position_smoothing_enabled = false
+
+[node name="Cafeteria" parent="." instance=ExtResource("Cafeteria")]
+position = Vector2(-250, -20)
+
+[node name="Tienda" parent="." instance=ExtResource("Tienda")]
+position = Vector2(258, -20)
+
+[node name="Club" parent="." instance=ExtResource("Club")]
+position = Vector2(0, -115)
+
+[node name="Fuente" parent="." instance=ExtResource("Fuente")]
+position = Vector2(22, 45)
+
+[node name="Pino1" parent="." instance=ExtResource("Pino")]
+position = Vector2(-359, -68)
+
+[node name="Pino2" parent="." instance=ExtResource("Pino")]
+position = Vector2(-320, -127)
+
+[node name="Pino3" parent="." instance=ExtResource("Pino")]
+position = Vector2(-170, -158)
+
+[node name="Pino4" parent="." instance=ExtResource("Pino")]
+position = Vector2(-114, -155)
+
+[node name="Pino5" parent="." instance=ExtResource("Pino")]
+position = Vector2(136, -153)
+
+[node name="Pino6" parent="." instance=ExtResource("Pino")]
+position = Vector2(187, -151)
+
+[node name="Pino7" parent="." instance=ExtResource("Pino")]
+position = Vector2(350, -105)
+
+[node name="Pino8" parent="." instance=ExtResource("Pino")]
+position = Vector2(389, -44)
+
+[node name="Pino9" parent="." instance=ExtResource("Pino")]
+position = Vector2(-364, 65)
+
+[node name="Pino10" parent="." instance=ExtResource("Pino")]
+position = Vector2(-308, 132)
+
+[node name="Pino11" parent="." instance=ExtResource("Pino")]
+position = Vector2(359, 70)
+
+[node name="Pino12" parent="." instance=ExtResource("Pino")]
+position = Vector2(304, 134)
+
+[node name="Banco13" parent="." instance=ExtResource("Banco")]
+position = Vector2(-227, 94)
+
+[node name="Banco14" parent="." instance=ExtResource("Banco")]
+position = Vector2(-147, 124)
+
+[node name="Banco15" parent="." instance=ExtResource("Banco")]
+position = Vector2(183, 119)
+
+[node name="Banco16" parent="." instance=ExtResource("Banco")]
+position = Vector2(265, 86)
+
+[node name="Farol17" parent="." instance=ExtResource("Farol")]
+position = Vector2(-310, 17)
+
+[node name="Farol18" parent="." instance=ExtResource("Farol")]
+position = Vector2(-179, 19)
+
+[node name="Farol19" parent="." instance=ExtResource("Farol")]
+position = Vector2(185, 10)
+
+[node name="Farol20" parent="." instance=ExtResource("Farol")]
+position = Vector2(318, 6)
+
+[node name="Farol21" parent="." instance=ExtResource("Farol")]
+position = Vector2(-77, -90)
+
+[node name="Farol22" parent="." instance=ExtResource("Farol")]
+position = Vector2(80, -89)
+
+[node name="Farol23" parent="." instance=ExtResource("Farol")]
+position = Vector2(-80, 159)
+
+[node name="Farol24" parent="." instance=ExtResource("Farol")]
+position = Vector2(80, 158)
+
+[node name="Arbusto25" parent="." instance=ExtResource("Arbusto")]
+position = Vector2(-352, -22)
+
+[node name="Arbusto26" parent="." instance=ExtResource("Arbusto")]
+position = Vector2(-325, 3)
+
+[node name="Arbusto27" parent="." instance=ExtResource("Arbusto")]
+position = Vector2(-305, 103)
+
+[node name="Arbusto28" parent="." instance=ExtResource("Arbusto")]
+position = Vector2(-274, 131)
+
+[node name="Arbusto29" parent="." instance=ExtResource("Arbusto")]
+position = Vector2(-115, -151)
+
+[node name="Arbusto30" parent="." instance=ExtResource("Arbusto")]
+position = Vector2(99, -145)
+
+[node name="Arbusto31" parent="." instance=ExtResource("Arbusto")]
+position = Vector2(157, -143)
+
+[node name="Arbusto32" parent="." instance=ExtResource("Arbusto")]
+position = Vector2(352, -35)
+
+[node name="Arbusto33" parent="." instance=ExtResource("Arbusto")]
+position = Vector2(366, 25)
+
+[node name="Arbusto34" parent="." instance=ExtResource("Arbusto")]
+position = Vector2(313, 103)
+
+[node name="Arbusto35" parent="." instance=ExtResource("Arbusto")]
+position = Vector2(285, 133)
+
+[node name="Arbusto36" parent="." instance=ExtResource("Arbusto")]
+position = Vector2(-151, 162)
+
+[node name="Arbusto37" parent="." instance=ExtResource("Arbusto")]
+position = Vector2(-120, 168)
+
+[node name="Arbusto38" parent="." instance=ExtResource("Arbusto")]
+position = Vector2(136, 169)
+
+[node name="Arbusto39" parent="." instance=ExtResource("Arbusto")]
+position = Vector2(166, 159)

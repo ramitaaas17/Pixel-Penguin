@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3]
+[ext_resource type="Theme" path="res://assets/ui/pixel_theme.tres" id="theme"]
+[node name="PixelButton" type="Button"]
+custom_minimum_size = Vector2(36, 36)
+texture_filter = 1
+theme = ExtResource("theme")
+theme_type_variation = &"PixelButton"
+mouse_default_cursor_shape = 2
+text = "Botón"

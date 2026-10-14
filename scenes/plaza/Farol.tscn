@@ -1,0 +1,30 @@
+[gd_scene load_steps=6 format=3]
+[ext_resource type="Texture2D" path="res://assets/sprites/tileSet.png" id="1"]
+[ext_resource type="Script" path="res://scripts/plaza/Shadow.gd" id="2"]
+[ext_resource type="Shader" path="res://assets/plaza/pixel_cutout.gdshader" id="3"]
+[sub_resource type="ShaderMaterial" id="Material"]
+shader = ExtResource("3")
+[sub_resource type="RectangleShape2D" id="Foot"]
+size = Vector2(20, 18)
+[node name="Farol" type="Node2D" groups=["obstaculos_plaza"]]
+texture_filter = 1
+metadata/huella = Rect2(-10, -10, 20, 18)
+[node name="Sombra" type="Node2D" parent="."]
+position = Vector2(0, 0)
+z_index = -1
+script = ExtResource("2")
+size = Vector2(26, 10)
+[node name="Sprite2D" type="Sprite2D" parent="."]
+material = SubResource("Material")
+texture = ExtResource("1")
+region_enabled = true
+region_rect = Rect2(64, 64, 64, 64)
+centered = false
+offset = Vector2(-32, -56)
+scale = Vector2(2, 2)
+[node name="Cuerpo" type="StaticBody2D" parent="."]
+collision_layer = 1
+collision_mask = 0
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Cuerpo"]
+position = Vector2(0, -1)
+shape = SubResource("Foot")

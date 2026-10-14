@@ -1,0 +1,47 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API OpenGL ES 3.0 (ANGLE 2.1.1 git hash: aaebda1c5a40) - Compatibility - Using Device: Google Inc. (Microsoft) - ANGLE (Microsoft, Microsoft Basic Render Driver (0x0000008C) Direct3D11 vs_5_0 ps_5_0, D3D11-10.0.26100.8972)
+
+PASS Fuente propia en el tema global
+PASS Español completo sin fallback: 
+PASS Fuente sin antialiasing
+PASS Sin posicionamiento subpixel
+PASS Sin sustitución silenciosa por fuente del sistema
+PASS Rasterizado a resolución nativa
+PASS Viewport compartido por mundo y UI
+PASS Escalado entero
+PASS Cuatro estados visuales distintos
+PASS Pulsación discreta de dos píxeles
+PASS Pulsación sin saltos de layout
+PASS Captura plaza-pixel.png
+PASS Captura hud-espanol.png
+PASS Captura nombres-indicadores.png
+PASS Nombres con la fuente global
+PASS Indicadores con la fuente global
+PASS Captura selector-pixel.png
+PASS Cafetería conserva precios y estado disabled
+PASS Captura cafeteria-pixel.png
+PASS Captura tienda-componentes.png
+CLICK_TARGET text=Inactivo matched=true
+PASS Disabled no activa acciones
+CLICK_TARGET text=Normal matched=true
+PASS Botón normal activa una sola vez
+PASS Captura componentes-pixel.png
+PASS Escala entera (960, 600)
+PASS Lienzo lógico estable (960, 600)
+PASS Controles sin recortes (960, 600)
+WINDOW requested=(960, 600) actual=(960, 600) logical=(960.0, 600.0) scale=(1.0, 1.0)
+PASS Escala entera (1280, 720)
+PASS Lienzo lógico estable (1280, 720)
+PASS Controles sin recortes (1280, 720)
+WINDOW requested=(1280, 720) actual=(1280, 720) logical=(960.0, 600.0) scale=(1.0, 1.0)
+PASS Escala entera (1920, 1080)
+PASS Lienzo lógico estable (1920, 1080)
+PASS Controles sin recortes (1920, 1080)
+WINDOW requested=(1920, 1080) actual=(1920, 1080) logical=(960.0, 600.0) scale=(1.0, 1.0)
+PASS Escala entera (1920, 1200)
+PASS Lienzo lógico estable (1920, 1200)
+PASS Controles sin recortes (1920, 1200)
+WINDOW requested=(1920, 1200) actual=(1920, 1200) logical=(960.0, 600.0) scale=(2.0, 2.0)
+UI_PROFILE with_panel_average_process_ms=245.234433333333 draw_calls=93.0
+UI_PROFILE world_only_average_process_ms=201.3443 draw_calls=69.0
+PIXEL_UI_VALIDATION failures=0
