@@ -31,3 +31,11 @@ func _physics_process(_delta: float) -> void:
 			animacion.stop()
 		sprite.frame = 0
 	move_and_slide()
+
+func setInputEnabled(value: bool) -> void:
+	set_process_unhandled_input(value)
+	if not value:
+		moviendose = false
+		velocity = Vector2.ZERO
+		animacion.stop()
+		sprite.frame = 0

@@ -34,3 +34,9 @@ func _physics_process(_delta: float) -> void:
         if animacion.current_animation != "caminar" or not animacion.is_playing():
             animacion.play("caminar")
     move_and_slide()
+
+func setInputEnabled(value: bool) -> void:
+    super.setInputEnabled(value)
+    habilitado = value
+    if not value:
+        ruta.clear()

@@ -1,0 +1,15 @@
+PASS dos instancias saludables y balanceadas
+PASS baja normal elimina registro y destino de Nginx
+PASS seis consultas atendidas por la instancia restante
+PASS instancia recuperada vuelve al balanceo
+PASS caída abrupta excluye instancia no saludable del enrutamiento
+PASS Consul elimina registro crítico tras plazo de limpieza
+PASS registro automático después de caída abrupta
+PASS nueva instancia se registra sin editar destinos
+PASS Nginx enruta a la nueva instancia descubierta
+PASS retirada de instancia adicional sin destinos residuales
+PASS base caída deja cero destinos saludables y devuelve 503
+PASS recuperación de base restaura salud y tráfico
+PASS pérdida de Consul caduca destinos anteriores y devuelve 503
+PASS recuperación de Consul restaura descubrimiento y balanceo
+DISCOVERY_VALIDATION failures=0

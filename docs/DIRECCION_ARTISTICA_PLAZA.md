@@ -17,14 +17,14 @@ Cámara fija de plaza social; nearest e integer scaling para mantener la lectura
 - El movimiento usa una cuadrícula de navegación de 8 px, con margen de 10 px alrededor de obstáculos.
 - Sombra reutilizable mediante Shadow.gd; shader de recorte para halos alfa sin alterar las imágenes.
 - Se reutilizan exclusivamente los PNG originales; no se generaron imágenes mediante IA.
-- Animaciones: agua de fuente y bandera del club. La tienda usa una variante nevada fija.
+- Animaciones: bandera del club; la fuente permanece estática. La tienda usa una variante nevada fija.
 
 ## Uso
 Clic para caminar. E junto a tienda/cafetería para comprar con un jugador seleccionado.
 Pasear por la plaza permite explorar sin iniciar el backend y sin hacer compras.
 Elegir jugador conserva la conexión al sistema existente.
-Los NPC de cuentas siguen siendo simulaciones locales, no presencia multijugador sincronizada.
-Se muestran hasta 12 NPC. No se cambia el backend ni su modelo de compras.
+Los NPC automáticos fueron retirados. Los registros de jugadores no representan presencia conectada.
+La presencia de jugadores reales queda pendiente; no hay movimiento multijugador sincronizado.
 
 ## Validación
 Godot: importar en headless; abrir la escena; comprobar rutas rodeando la fuente,

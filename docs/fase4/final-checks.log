@@ -1,0 +1,13 @@
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+cafeteria-service healthy
+consul healthy
+db-cafeteria healthy
+db-jugadores healthy
+db-tienda healthy
+frontend healthy
+gateway healthy
+jugadores-service healthy
+middleware healthy
+tienda-service-1 healthy
+tienda-service-2 healthy

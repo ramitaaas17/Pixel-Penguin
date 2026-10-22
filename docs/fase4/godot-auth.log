@@ -1,0 +1,36 @@
+Godot Engine v4.7.2.stable.fedora.ed1daf0bf - https://godotengine.org
+OpenGL API 4.6 (Core Profile) Mesa 25.3.6 - Compatibility - Using Device: Intel - Mesa Intel(R) Arc(tm) Graphics (MTL)
+
+PASS Bienvenida sin selector libre de jugadores
+PASS Captura welcome
+PASS Contraseña oculta con glifo propio
+PASS Captura login
+PASS Escribir E no mueve ni activa comercios
+PASS Registro cabe en 960 x 600
+PASS Captura register
+PASS Contraseña corta rechazada antes de enviar
+PASS Contraseña larga rechazada sin truncarla
+PASS Confirmación rechazada antes de enviar
+PASS Captura confirmation-error
+AUTH_WINDOW requested=(1280, 720) actual=(1280, 720) scale=(1.0, 1.0)
+PASS Formulario y escala entera (1280, 720)
+AUTH_WINDOW requested=(1920, 1200) actual=(1920, 1200) scale=(2.0, 2.0)
+PASS Formulario y escala entera (1920, 1200)
+PASS Envío único con campos y botones bloqueados
+PASS Registro real entra a la plaza
+PASS Identidad confirmada y HUD con monedas del servidor
+PASS Captura authenticated-plaza
+PASS Captura account
+PASS Logout real vuelve a bienvenida
+PASS Registro duplicado termina su estado de carga
+PASS Nombre ocupado muestra un error claro
+PASS Captura duplicate-user
+PASS Login inválido termina su estado de carga
+PASS Credenciales inválidas muestran mensaje claro
+PASS Captura invalid-login
+PASS Login real recupera la misma cuenta
+PASS Datos recuperados sin crear otro jugador
+PASS Caducidad local limpia la identidad
+PASS Sesión caducada permite volver a entrar o pasear
+PASS Paseo de invitado al finalizar
+AUTH_UI_VALIDATION failures=0

@@ -1,9 +1,7 @@
 extends "res://scripts/Mapa.gd"
 const PLAYER_SCRIPT := preload("res://scripts/plaza/PlazaPlayer.gd")
-const NPC_SCRIPT := preload("res://scripts/plaza/PlazaNPC.gd")
 const SHADOW := preload("res://scripts/plaza/Shadow.gd")
 const PLAYER_SCENE := preload("res://scenes/personaje/CaminarDerecha.tscn")
-const MAX_NPC := 12
 const HUD_SCRIPT := preload("res://scripts/ui/PixelHUD.gd")
 var ui_hud: Control
 var caminos := AStarGrid2D.new()
@@ -127,8 +125,6 @@ func _crear_interfaz() -> void:
     aviso = ui_hud.aviso
     ui_hud.elegir.pressed.connect(func():
         if not is_instance_valid(seleccion_ui):
-            jugador_nodo.habilitado = false
-            jugador_nodo.ruta.clear()
             _mostrar_seleccion_jugador()
     )
     aviso_timer = Timer.new()
@@ -136,60 +132,6 @@ func _crear_interfaz() -> void:
     aviso_timer.wait_time = 4
     aviso_timer.timeout.connect(func(): ui_hud.show_notice(""))
     add_child(aviso_timer)
-
-func _mostrar_seleccion_jugador() -> void:
-    var ventana := UI.modal(self, "Nos vemos en la plaza", _pasear)
-    seleccion_ui = ventana.layer
-    seleccion_ui.name = "SeleccionJugador"
-    var content: VBoxContainer = ventana.body
-    content.add_child(UI.label("Elige tu pingüino o entra a dar un paseo.", "SecondaryLabel"))
-    caja_seleccion = UI.list_area(content, 144)
-    titulo_seleccion = UI.label("Jugadores", "SecondaryLabel")
-    caja_seleccion.add_child(titulo_seleccion)
-    var paseo := UI.button("Pasear por la plaza")
-    paseo.name = "Pasear"
-    paseo.pressed.connect(_pasear)
-    content.add_child(paseo)
-    paseo.grab_focus.call_deferred()
-    if "--plaza-preview" not in OS.get_cmdline_user_args():
-        _cargar_lista_seleccion()
-
-func _unhandled_key_input(event: InputEvent) -> void:
-    if event.is_action_pressed("ui_cancel") and is_instance_valid(seleccion_ui):
-        _pasear()
-        get_viewport().set_input_as_handled()
-
-func _cargar_lista_seleccion() -> void:
-    var target := caja_seleccion
-    for child in target.get_children():
-        if child != titulo_seleccion:
-            child.queue_free()
-    var cargando := UI.label("Buscando jugadores...", "SecondaryLabel")
-    target.add_child(cargando)
-    Api.jugadores_listar(func(codigo, datos):
-        if not is_instance_valid(target):
-            return
-        if is_instance_valid(cargando):
-            cargando.queue_free()
-        if codigo != 200 or not datos is Array or datos.is_empty():
-            target.add_child(UI.wrapped_label("Puedes pasear mientras no haya jugadores.", "SecondaryLabel"))
-            var retry := UI.button("Volver a buscar")
-            retry.pressed.connect(_cargar_lista_seleccion)
-            target.add_child(retry)
-            return
-        for registro in datos:
-            var boton := UI.button(str(registro.get("nombre", "Pingüino")))
-            boton.pressed.connect(func():
-                EstadoJuego.seleccionar_jugador(int(registro["id"]), str(registro["nombre"]), int(registro["monedas"]))
-                _pasear()
-            )
-            target.add_child(boton)
-    )
-
-func _pasear() -> void:
-    if is_instance_valid(seleccion_ui):
-        seleccion_ui.queue_free()
-    jugador_nodo.habilitado = true
 
 func _crear_hud() -> void:
     hud_label = ui_hud.estado
@@ -205,53 +147,13 @@ func mostrar_aviso(texto: String) -> void:
     ui_hud.show_notice(texto)
     aviso_timer.start()
 
-func _actualizar_jugadores() -> void:
-    Api.jugadores_listar(func(codigo, datos):
-        if codigo != 200 or not datos is Array:
-            return
-        var presentes: Array[int] = []
-        for registro in datos:
-            var id := int(registro["id"])
-            if id == EstadoJuego.jugador_id:
-                continue
-            presentes.append(id)
-        for id in pinguinos_npc.keys():
-            if id not in presentes:
-                if is_instance_valid(pinguinos_npc[id]):
-                    pinguinos_npc[id].queue_free()
-                pinguinos_npc.erase(id)
-        for registro in datos:
-            var id := int(registro["id"])
-            if id == EstadoJuego.jugador_id or pinguinos_npc.has(id) or pinguinos_npc.size() >= MAX_NPC:
-                continue
-            _spawn_npc(id, registro)
-    )
-
-func _spawn_npc(id: int, registro: Dictionary) -> void:
-    var npc := ESCENA_NPC.instantiate()
-    npc.set_script(NPC_SCRIPT)
-    _normalizar_personaje(npc)
-    var a := float(pinguinos_npc.size()) * 2.39996
-    var point := Vector2(cos(a) * 155, 90 + sin(a) * 45)
-    npc.position = Vector2(_celda_libre(point)) * 8
-    add_child(npc)
-    npc.set_datos(id, str(registro["nombre"]), int(registro["monedas"]))
-    var comercios: Array = []
-    for edificio in [$Tienda, $Cafeteria]:
-        comercios.append({"pos": edificio.get_node("Entrada").global_position, "tipo": edificio.tipo_comercio})
-    npc.set_comercios(comercios)
-    var label := npc.get_node("Nombre") as Label
-    label.position = Vector2(-60, -58)
-    label.size = Vector2(120, 20)
-    label.theme_type_variation = "NameLabel"
-    label.remove_theme_color_override("font_color")
-    label.remove_theme_font_size_override("font_size")
-    label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-    pinguinos_npc[id] = npc
-
 func _capturar(path: String) -> void:
     await get_tree().create_timer(1.0).timeout
     await RenderingServer.frame_post_draw
     var err := get_viewport().get_texture().get_image().save_png(path)
     print("PLAZA_CAPTURE ", path, " status=", err)
     get_tree().quit(0 if err == OK else 1)
+
+func _actualizar_hud() -> void:
+    super._actualizar_hud()
+    ui_hud.elegir.text = "Mi cuenta" if EstadoJuego.tiene_jugador() else "Entrar"

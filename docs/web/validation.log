@@ -1,0 +1,7 @@
+PASS WebAssembly inicia la plaza en Chromium
+PASS formulario real llama al backend en el mismo origen y recibe 401
+PASS entrada invitada y clic de movimiento ejecutados
+PASS registro desde Web crea identidad y saldo confirmado de 100 monedas
+PASS login desde Web después de recargar
+PASS cuenta temporal eliminada
+WEB_VALIDATION failures=0

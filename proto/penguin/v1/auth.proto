@@ -1,0 +1,20 @@
+syntax = "proto3";
+package penguin.v1;
+option go_package = "pixelpenguin/platform/gen/penguin/v1;penguinv1";
+import "penguin/v1/common.proto";
+import "penguin/v1/players.proto";
+message Credentials {
+  string username = 1;
+  string password = 2;
+}
+message Session {
+  string token = 1;
+  int64 expires_at = 2;
+  Player player = 3;
+}
+service Auth {
+  rpc Register(Credentials) returns (Session);
+  rpc Login(Credentials) returns (Session);
+  rpc GetSession(Empty) returns (Session);
+  rpc Logout(Empty) returns (Empty);
+}

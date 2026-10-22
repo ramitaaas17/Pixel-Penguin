@@ -34,13 +34,19 @@ func _actualizar_animacion() -> void:
     pass
 
 func _unhandled_key_input(event: InputEvent) -> void:
+    var scene := get_tree().current_scene
+    var focusOwner := get_viewport().gui_get_focus_owner()
+    if focusOwner is LineEdit or focusOwner is TextEdit:
+        return
+    if scene.has_method("canInteract") and not scene.canInteract():
+        return
     if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_E and pinguino_cerca:
         if tipo_comercio != "" and EstadoJuego.tiene_jugador():
             _abrir_panel()
         else:
             var plaza := get_tree().current_scene
             if plaza.has_method("mostrar_aviso"):
-                plaza.mostrar_aviso("Elige un jugador para comprar." if tipo_comercio != "" else "Un lugar para encontrarnos.")
+                plaza.mostrar_aviso("Entra con tu cuenta para consultar el comercio." if tipo_comercio != "" else "Un lugar para encontrarnos.")
         get_viewport().set_input_as_handled()
     if event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE:
         _cerrar_panel()

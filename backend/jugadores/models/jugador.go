@@ -1,6 +1,9 @@
 package models
 
-import "database/sql"
+import (
+	"context"
+	"database/sql"
+)
 
 type Jugador struct {
 	Id      int    `json:"id"`
@@ -12,8 +15,8 @@ type JugadorModel struct {
 	Db *sql.DB
 }
 
-func (m *JugadorModel) ObtenerTodos() ([]Jugador, error) {
-	rows, err := m.Db.Query("SELECT id, nombre, monedas FROM jugadores")
+func (m *JugadorModel) ObtenerTodos(ctx context.Context) ([]Jugador, error) {
+	rows, err := m.Db.QueryContext(ctx, "SELECT id, nombre, monedas FROM jugadores")
 	if err != nil {
 		return nil, err
 	}
@@ -27,33 +30,33 @@ func (m *JugadorModel) ObtenerTodos() ([]Jugador, error) {
 		}
 		jugadores = append(jugadores, j)
 	}
-	return jugadores, nil
+	return jugadores, rows.Err()
 }
 
-func (m *JugadorModel) ObtenerPorId(id int) (*Jugador, error) {
+func (m *JugadorModel) ObtenerPorId(ctx context.Context, id int) (*Jugador, error) {
 	var j Jugador
 	consulta := "SELECT id, nombre, monedas FROM jugadores WHERE id = $1"
-	err := m.Db.QueryRow(consulta, id).Scan(&j.Id, &j.Nombre, &j.Monedas)
+	err := m.Db.QueryRowContext(ctx, consulta, id).Scan(&j.Id, &j.Nombre, &j.Monedas)
 	if err != nil {
 		return nil, err
 	}
 	return &j, nil
 }
 
-func (m *JugadorModel) Crear(nombre string, monedas int) (*Jugador, error) {
+func (m *JugadorModel) Crear(ctx context.Context, nombre string, monedas int) (*Jugador, error) {
 	var nuevoId int
 	consulta := "INSERT INTO jugadores (nombre, monedas) VALUES ($1, $2) RETURNING id"
-	err := m.Db.QueryRow(consulta, nombre, monedas).Scan(&nuevoId)
+	err := m.Db.QueryRowContext(ctx, consulta, nombre, monedas).Scan(&nuevoId)
 	if err != nil {
 		return nil, err
 	}
 	return &Jugador{Id: nuevoId, Nombre: nombre, Monedas: monedas}, nil
 }
 
-func (m *JugadorModel) ActualizarMonedas(id int, monedas int) (*Jugador, error) {
+func (m *JugadorModel) ActualizarMonedas(ctx context.Context, id int, monedas int) (*Jugador, error) {
 	consulta := "UPDATE jugadores SET monedas = $1 WHERE id = $2"
-	if _, err := m.Db.Exec(consulta, monedas, id); err != nil {
+	if _, err := m.Db.ExecContext(ctx, consulta, monedas, id); err != nil {
 		return nil, err
 	}
-	return m.ObtenerPorId(id)
+	return m.ObtenerPorId(ctx, id)
 }

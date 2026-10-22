@@ -1,6 +1,9 @@
 package models
 
-import "database/sql"
+import (
+	"context"
+	"database/sql"
+)
 
 type Producto struct {
 	Id     int     `json:"id"`
@@ -13,8 +16,8 @@ type ProductoModel struct {
 	Db *sql.DB
 }
 
-func (m *ProductoModel) ObtenerTodos() ([]Producto, error) {
-	rows, err := m.Db.Query("SELECT id, nombre, precio, stock FROM productos")
+func (m *ProductoModel) ObtenerTodos(ctx context.Context) ([]Producto, error) {
+	rows, err := m.Db.QueryContext(ctx, "SELECT id, nombre, precio, stock FROM productos")
 	if err != nil {
 		return nil, err
 	}
@@ -28,33 +31,33 @@ func (m *ProductoModel) ObtenerTodos() ([]Producto, error) {
 		}
 		productos = append(productos, p)
 	}
-	return productos, nil
+	return productos, rows.Err()
 }
 
-func (m *ProductoModel) ObtenerPorId(id int) (*Producto, error) {
+func (m *ProductoModel) ObtenerPorId(ctx context.Context, id int) (*Producto, error) {
 	var p Producto
 	consulta := "SELECT id, nombre, precio, stock FROM productos WHERE id = $1"
-	err := m.Db.QueryRow(consulta, id).Scan(&p.Id, &p.Nombre, &p.Precio, &p.Stock)
+	err := m.Db.QueryRowContext(ctx, consulta, id).Scan(&p.Id, &p.Nombre, &p.Precio, &p.Stock)
 	if err != nil {
 		return nil, err
 	}
 	return &p, nil
 }
 
-func (m *ProductoModel) Crear(nombre string, precio float64, stock int) (*Producto, error) {
+func (m *ProductoModel) Crear(ctx context.Context, nombre string, precio float64, stock int) (*Producto, error) {
 	var nuevoId int
 	consulta := "INSERT INTO productos (nombre, precio, stock) VALUES ($1, $2, $3) RETURNING id"
-	err := m.Db.QueryRow(consulta, nombre, precio, stock).Scan(&nuevoId)
+	err := m.Db.QueryRowContext(ctx, consulta, nombre, precio, stock).Scan(&nuevoId)
 	if err != nil {
 		return nil, err
 	}
 	return &Producto{Id: nuevoId, Nombre: nombre, Precio: precio, Stock: stock}, nil
 }
 
-func (m *ProductoModel) ActualizarStock(id int, stock int) (*Producto, error) {
+func (m *ProductoModel) ActualizarStock(ctx context.Context, id int, stock int) (*Producto, error) {
 	consulta := "UPDATE productos SET stock = $1 WHERE id = $2"
-	if _, err := m.Db.Exec(consulta, stock, id); err != nil {
+	if _, err := m.Db.ExecContext(ctx, consulta, stock, id); err != nil {
 		return nil, err
 	}
-	return m.ObtenerPorId(id)
+	return m.ObtenerPorId(ctx, id)
 }

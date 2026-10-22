@@ -1,0 +1,21 @@
+PASS GET /heartbeat
+PASS GET /middleware/heartbeat
+PASS GET /jugadores
+PASS GET /tienda
+PASS GET /cafeteria
+PASS frontend a través del gateway
+PASS ambas instancias atienden peticiones
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+cafeteria-service healthy
+consul healthy
+db-cafeteria healthy
+db-jugadores healthy
+db-tienda healthy
+frontend healthy
+gateway healthy
+jugadores-service healthy
+middleware healthy
+tienda-service-1 healthy
+tienda-service-2 healthy
+PASS Consul publica dos destinos gRPC saludables en 9090

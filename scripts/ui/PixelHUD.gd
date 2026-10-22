@@ -39,7 +39,7 @@ func _ready() -> void:
     spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     spacer.mouse_filter = Control.MOUSE_FILTER_IGNORE
     header.add_child(spacer)
-    elegir = UI.button("Elegir jugador")
+    elegir = UI.button("Entrar")
     elegir.name = "ElegirJugador"
     elegir.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
     header.add_child(elegir)

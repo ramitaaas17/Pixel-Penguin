@@ -1,123 +1,233 @@
-version: "3.9"
-
 services:
+  consul:
+    image: hashicorp/consul:1.22
+    command: ["agent", "-server", "-bootstrap-expect=1", "-client=0.0.0.0", "-bind=0.0.0.0", "-data-dir=/consul/data"]
+    volumes:
+      - consul-data:/consul/data
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:8500/v1/status/leader | grep -q ':8300'"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+    networks: [appnet]
   db-jugadores:
     image: postgres:16-alpine
-    container_name: db-jugadores
     environment:
       POSTGRES_USER: jugadoresapp
-      POSTGRES_PASSWORD: jugadoresapp123
+      POSTGRES_PASSWORD: ${JUGADORES_DB_PASSWORD:?Define JUGADORES_DB_PASSWORD en .env}
       POSTGRES_DB: jugadoresdb
     volumes:
-      - ./backend/jugadores/schema.sql:/docker-entrypoint-initdb.d/schema.sql
-    networks:
-      - appnet
+      - jugadores-data:/var/lib/postgresql/data
+      - ./backend/jugadores/schema.sql:/docker-entrypoint-initdb.d/schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+    networks: [appnet]
 
   jugadores-service:
-    build: ./backend/jugadores
-    container_name: jugadores-service
+    build:
+      context: .
+      dockerfile: backend/jugadores/Dockerfile
     environment:
+      CONSUL_HTTP_ADDR: http://consul:8500
+      SERVICE_NAME: jugadores
       DB_HOST: db-jugadores
-      DB_PORT: 5432
+      DB_PORT: "5432"
       DB_USER: jugadoresapp
-      DB_PASSWORD: jugadoresapp123
+      DB_PASSWORD: ${JUGADORES_DB_PASSWORD:?Define JUGADORES_DB_PASSWORD en .env}
       DB_NAME: jugadoresdb
+      INSTANCE_NAME: jugadores-service
     depends_on:
-      - db-jugadores
-    networks:
-      - appnet
+      consul:
+        condition: service_healthy
+      db-jugadores:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:8080/heartbeat"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks: [appnet]
 
   db-tienda:
     image: postgres:16-alpine
-    container_name: db-tienda
     environment:
       POSTGRES_USER: tiendaapp
-      POSTGRES_PASSWORD: tiendaapp123
+      POSTGRES_PASSWORD: ${TIENDA_DB_PASSWORD:?Define TIENDA_DB_PASSWORD en .env}
       POSTGRES_DB: tiendadb
     volumes:
-      - ./backend/tienda/schema.sql:/docker-entrypoint-initdb.d/schema.sql
-    networks:
-      - appnet
+      - tienda-data:/var/lib/postgresql/data
+      - ./backend/tienda/schema.sql:/docker-entrypoint-initdb.d/schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+    networks: [appnet]
 
   tienda-service-1:
-    build: ./backend/tienda
-    container_name: tienda-service-1
+    build:
+      context: .
+      dockerfile: backend/tienda/Dockerfile
     environment:
+      CONSUL_HTTP_ADDR: http://consul:8500
+      GRPC_GATEWAY_ADDR: gateway:9090
+      SERVICE_NAME: tienda
       DB_HOST: db-tienda
-      DB_PORT: 5432
+      DB_PORT: "5432"
       DB_USER: tiendaapp
-      DB_PASSWORD: tiendaapp123
+      DB_PASSWORD: ${TIENDA_DB_PASSWORD:?Define TIENDA_DB_PASSWORD en .env}
       DB_NAME: tiendadb
       INSTANCE_NAME: tienda-service-1
     depends_on:
-      - db-tienda
-    networks:
-      - appnet
+      consul:
+        condition: service_healthy
+      db-tienda:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:8080/heartbeat"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks: [appnet]
 
   tienda-service-2:
-    build: ./backend/tienda
-    container_name: tienda-service-2
+    build:
+      context: .
+      dockerfile: backend/tienda/Dockerfile
     environment:
+      CONSUL_HTTP_ADDR: http://consul:8500
+      GRPC_GATEWAY_ADDR: gateway:9090
+      SERVICE_NAME: tienda
       DB_HOST: db-tienda
-      DB_PORT: 5432
+      DB_PORT: "5432"
       DB_USER: tiendaapp
-      DB_PASSWORD: tiendaapp123
+      DB_PASSWORD: ${TIENDA_DB_PASSWORD:?Define TIENDA_DB_PASSWORD en .env}
       DB_NAME: tiendadb
       INSTANCE_NAME: tienda-service-2
     depends_on:
-      - db-tienda
-    networks:
-      - appnet
+      consul:
+        condition: service_healthy
+      db-tienda:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:8080/heartbeat"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks: [appnet]
 
   db-cafeteria:
     image: postgres:16-alpine
-    container_name: db-cafeteria
     environment:
       POSTGRES_USER: cafeteriaapp
-      POSTGRES_PASSWORD: cafeteriaapp123
+      POSTGRES_PASSWORD: ${CAFETERIA_DB_PASSWORD:?Define CAFETERIA_DB_PASSWORD en .env}
       POSTGRES_DB: cafeteriadb
     volumes:
-      - ./backend/cafeteria/schema.sql:/docker-entrypoint-initdb.d/schema.sql
-    networks:
-      - appnet
+      - cafeteria-data:/var/lib/postgresql/data
+      - ./backend/cafeteria/schema.sql:/docker-entrypoint-initdb.d/schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+    networks: [appnet]
 
   cafeteria-service:
-    build: ./backend/cafeteria
-    container_name: cafeteria-service
+    build:
+      context: .
+      dockerfile: backend/cafeteria/Dockerfile
     environment:
+      CONSUL_HTTP_ADDR: http://consul:8500
+      GRPC_GATEWAY_ADDR: gateway:9090
+      SERVICE_NAME: cafeteria
       DB_HOST: db-cafeteria
-      DB_PORT: 5432
+      DB_PORT: "5432"
       DB_USER: cafeteriaapp
-      DB_PASSWORD: cafeteriaapp123
+      DB_PASSWORD: ${CAFETERIA_DB_PASSWORD:?Define CAFETERIA_DB_PASSWORD en .env}
       DB_NAME: cafeteriadb
+      INSTANCE_NAME: cafeteria-service
     depends_on:
-      - db-cafeteria
-    networks:
-      - appnet
+      consul:
+        condition: service_healthy
+      db-cafeteria:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:8080/heartbeat"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks: [appnet]
 
   middleware:
-    build: ./middleware
-    container_name: middleware
-    ports:
-      - "8000:8000"
-    depends_on:
-      - jugadores-service
-      - tienda-service-1
-      - tienda-service-2
-      - cafeteria-service
-    networks:
-      - appnet
-
+    build:
+      context: .
+      dockerfile: middleware/Dockerfile
+    environment:
+      GRPC_GATEWAY_ADDR: gateway:9090
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:8000/heartbeat"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks: [appnet]
   frontend:
     build: ./frontend
-    container_name: frontend
-    ports:
-      - "3000:80"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks: [appnet]
+  gateway:
+    build:
+      context: .
+      dockerfile: nginx/Dockerfile
+    environment:
+      CONSUL_HTTP_ADDR: http://consul:8500
+    ports: ["3000:80", "8000:8000"]
     depends_on:
-      - middleware
-    networks:
-      - appnet
+      consul:
+        condition: service_healthy
+      jugadores-service:
+        condition: service_healthy
 
+      tienda-service-1:
+        condition: service_healthy
+
+      tienda-service-2:
+        condition: service_healthy
+
+      cafeteria-service:
+        condition: service_healthy
+
+      middleware:
+        condition: service_healthy
+
+      frontend:
+        condition: service_healthy
+
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1/heartbeat"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks: [appnet]
+  grpcurl:
+    profiles: ["tools"]
+    build:
+      context: .
+      dockerfile: tools/grpcurl/Dockerfile
+    volumes:
+      - ./proto:/proto:ro
+    networks: [appnet]
 networks:
   appnet:
     driver: bridge
+volumes:
+  jugadores-data:
+  tienda-data:
+  cafeteria-data:
+  consul-data:

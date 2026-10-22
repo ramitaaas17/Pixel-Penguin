@@ -1,0 +1,49 @@
+GRPCURL_SAMPLE_BEGIN
+
+Resolved method descriptor:
+rpc ListProducts ( .penguin.v1.Empty ) returns ( .penguin.v1.ProductList );
+
+Request metadata to send:
+(empty)
+
+Response headers received:
+content-type: application/grpc
+date: Thu, 22 Oct 2026 05:43:10 GMT
+server: nginx/1.28.3
+x-instance-name: tienda-service-2
+
+Response contents:
+{
+  "products": [
+    {
+      "id": "1",
+      "name": "Gorro de lana",
+      "price": 80,
+      "stock": "20"
+    },
+    {
+      "id": "2",
+      "name": "Bufanda",
+      "price": 60,
+      "stock": "25"
+    }
+  ]
+}
+
+Response trailers received:
+(empty)
+Sent 1 request and received 1 response
+GRPCURL_SAMPLE_END
+PASS grpcurl balancea llamadas Store/ListProducts entre dos instancias
+PASS grpcurl consulta los tres servicios a través de Nginx
+PASS altas, consultas y actualizaciones gRPC de registros de prueba
+PASS Cafetería valida Jugadores por gRPC y guarda el pedido asociado
+PASS contrato HTTP legado conserva JSON numérico y pedidos sin asociación
+PASS errores gRPC NotFound/InvalidArgument sin insertar pedido inválido
+PASS Jugadores fuera del registry saludable
+PASS fallo entre servicios devuelve Unavailable y no inserta pedido
+PASS Jugadores recuperado
+PASS migración idempotente conserva pedido asociado tras reinicio
+PASS pedido sin asociación conservado tras reinicio
+PASS limpieza exclusiva de fixtures gRPC/HTTP
+GRPC_VALIDATION failures=0

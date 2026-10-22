@@ -1,0 +1,3 @@
+PASS grpcurl balancea el catálogo público entre dos instancias
+PASS los tres backends exigen sesión también por gRPC directo
+GRPC_VALIDATION failures=0

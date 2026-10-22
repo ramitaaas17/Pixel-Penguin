@@ -1,0 +1,58 @@
+worker_processes 1;
+events { worker_connections 1024; }
+http {
+    include /etc/nginx/mime.types;
+    default_type application/octet-stream;
+    map $uri $authLimitKey {
+        default "";
+        /auth/login $binary_remote_addr;
+        /auth/register $binary_remote_addr;
+    }
+    limit_req_zone $authLimitKey zone=auth:10m rate=5r/s;
+    {{range $name := serviceNames}}
+    upstream {{$name}} {
+        {{range index $ $name}}server {{.}} max_fails=1 fail_timeout=5s;
+        {{else}}server 127.0.0.1:9;
+        {{end}}
+    }
+    {{end}}
+    server {
+        listen 80;
+        listen 8000;
+        client_max_body_size 64k;
+        proxy_connect_timeout 2s;
+        proxy_read_timeout 15s;
+        proxy_send_timeout 15s;
+        proxy_next_upstream error timeout http_502 http_503 http_504;
+        proxy_next_upstream_tries 2;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        add_header X-Gateway nginx always;
+        location = /heartbeat { default_type text/plain; return 200 "nginx alive\n"; }
+        location = /middleware/heartbeat { proxy_pass http://middleware:8000/heartbeat; }
+        location /auth/ {
+            limit_req zone=auth burst=10 nodelay;
+            limit_req_status 429;
+            proxy_pass http://middleware:8000;
+        }
+        location ~ ^/jugadores(?:/|$) { proxy_pass http://middleware:8000; }
+        location ~ ^/tienda(?:/|$) { proxy_pass http://middleware:8000; }
+        location ~ ^/cafeteria(?:/|$) { proxy_pass http://middleware:8000; }
+        location / { proxy_pass http://frontend:80; }
+    }
+    server {
+        listen 9090;
+        http2 on;
+        client_max_body_size 64k;
+        grpc_connect_timeout 2s;
+        grpc_read_timeout 10s;
+        grpc_send_timeout 10s;
+        grpc_next_upstream off;
+        location /penguin.v1.Auth/ { grpc_pass grpc://jugadores; }
+        location /penguin.v1.Players/ { grpc_pass grpc://jugadores; }
+        location /penguin.v1.Store/ { grpc_pass grpc://tienda; }
+        location /penguin.v1.Cafeteria/ { grpc_pass grpc://cafeteria; }
+        location / { return 404; }
+    }
+}

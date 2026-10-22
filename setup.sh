@@ -1,17 +1,8 @@
-#!/bin/bash
-
-echo "checking docker..."
-if ! command -v docker &> /dev/null
-then
-    echo "docker no esta instalado, instalalo antes de seguir"
-    exit 1
-fi
-
-echo "descargando y compilando las imagenes..."
-docker compose build
-
-echo "levantando los contenedores..."
-docker compose up -d
-
-echo "listo, el frontend deberia estar en http://localhost:3000"
-echo "el middleware esta en http://localhost:8000"
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$0")"
+command -v docker >/dev/null || { echo "Instala Docker antes de continuar."; exit 1; }
+[ -f .env ] || { echo "Copia .env.example a .env y configura las contraseñas."; exit 1; }
+bash tools/export_web.sh
+docker compose up --build -d --wait
+echo "Juego Web: http://localhost:3000 | API: http://localhost:8000"

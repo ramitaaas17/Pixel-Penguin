@@ -1,0 +1,6 @@
+Godot Engine v4.7.2.stable.fedora.ed1daf0bf - https://godotengine.org
+
+PASS Godot HTTP → adaptador → gRPC /jugadores
+PASS Godot HTTP → adaptador → gRPC /tienda
+PASS Godot HTTP → adaptador → gRPC /cafeteria
+API_VALIDATION failures=0

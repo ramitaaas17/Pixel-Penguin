@@ -66,28 +66,14 @@ func run() -> void:
     plaza._crear_hud()
     plaza.mostrar_aviso("¡Hola, pingüino! ¿Tomamos un café?")
     await capture("hud-espanol.png")
-    plaza._spawn_npc(987654, {"nombre": "Ñandú", "monedas": 0})
-    var npc: Node2D = plaza.pinguinos_npc[987654]
-    npc.position = Vector2(-140, 66)
-    npc.set_physics_process(false)
-    for child in npc.get_children():
-        if child is Timer:
-            child.stop()
     plaza.get_node("Cafeteria")._on_body_entered(plaza.jugador_nodo)
-    await capture("nombres-indicadores.png")
-    check(npc.get_node("Nombre").get_theme_font("font").get_font_name() == font.get_font_name(), "Nombres con la fuente global")
     check(plaza.get_node("Cafeteria/Indicacion").get_theme_font("font").get_font_name() == font.get_font_name(), "Indicadores con la fuente global")
     plaza.get_node("Cafeteria")._on_body_exited(plaza.jugador_nodo)
-    npc.queue_free()
-    plaza.pinguinos_npc.clear()
     plaza.ui_hud.show_notice("")
     plaza._mostrar_seleccion_jugador()
     await settle()
-    for child in plaza.caja_seleccion.get_children():
-        if child != plaza.titulo_seleccion:
-            child.queue_free()
-    plaza.caja_seleccion.add_child(UI.button("Ángela · 120 monedas"))
-    plaza.caja_seleccion.add_child(UI.button("Íñigo · 85 monedas"))
+    plaza.authPanel.showForm("register")
+    plaza.authPanel.usernameField.text = "Ángela"
     await capture("selector-pixel.png")
     plaza._pasear()
     await settle()
@@ -100,7 +86,7 @@ func run() -> void:
     for button in buy_buttons:
         if button.disabled:
             disabled_count += 1
-    check(disabled_count == 1, "Cafetería conserva precios y estado disabled")
+    check(disabled_count == 3, "Cafetería conserva el menú en modo consulta")
     await capture("cafeteria-pixel.png")
     cafe._cerrar_panel()
     await settle()

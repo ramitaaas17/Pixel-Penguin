@@ -143,6 +143,53 @@ script = ExtResource("style")
 fill = Color(0.917647, 0.945098, 0.92549, 1)
 border = Color(0.462745, 0.576471, 0.615686, 1)
 
+[sub_resource type="StyleBox" id="input"]
+content_margin_left = 12.0
+content_margin_top = 6.0
+content_margin_right = 12.0
+content_margin_bottom = 6.0
+script = ExtResource("style")
+fill = Color(0.917647, 0.945098, 0.92549, 1)
+border = Color(0.207843, 0.333333, 0.388235, 1)
+corner = 2
+depth = 0
+
+[sub_resource type="StyleBox" id="quiet"]
+content_margin_left = 14.0
+content_margin_top = 6.0
+content_margin_right = 14.0
+content_margin_bottom = 6.0
+script = ExtResource("style")
+fill = Color(0.917647, 0.945098, 0.92549, 1)
+border = Color(0.207843, 0.333333, 0.388235, 1)
+corner = 2
+depth = 0
+shift = 0
+
+[sub_resource type="StyleBox" id="quiet_hover"]
+content_margin_left = 14.0
+content_margin_top = 6.0
+content_margin_right = 14.0
+content_margin_bottom = 6.0
+script = ExtResource("style")
+fill = Color(0.85, 0.91, 0.9, 1)
+border = Color(0.207843, 0.333333, 0.388235, 1)
+corner = 2
+depth = 0
+shift = 0
+
+[sub_resource type="StyleBox" id="quiet_pressed"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 4.0
+script = ExtResource("style")
+fill = Color(0.78, 0.86, 0.85, 1)
+border = Color(0.207843, 0.333333, 0.388235, 1)
+corner = 2
+depth = 0
+shift = 2
+
 [resource]
 default_base_scale = 1.0
 default_font = ExtResource("font")
@@ -214,3 +261,28 @@ VScrollBar/styles/scroll = SubResource("scroll")
 WorldHint/base_type = &"Label"
 WorldHint/font_sizes/font_size = 16
 WorldHint/styles/normal = SubResource("hint")
+
+LineEdit/colors/font_color = Color(0.141176, 0.239216, 0.286275, 1)
+LineEdit/colors/font_placeholder_color = Color(0.28, 0.39, 0.42, 1)
+LineEdit/colors/caret_color = Color(0.141176, 0.239216, 0.286275, 1)
+LineEdit/colors/selection_color = Color(0.25, 0.43, 0.48, 1)
+LineEdit/colors/font_selected_color = Color(0.95, 0.96, 0.93, 1)
+LineEdit/styles/normal = SubResource("input")
+LineEdit/styles/read_only = SubResource("input")
+LineEdit/styles/focus = SubResource("focus")
+ErrorLabel/base_type = &"Label"
+ErrorLabel/font_sizes/font_size = 16
+ErrorLabel/colors/font_color = Color(0.5, 0.18, 0.19, 1)
+FormColumn/base_type = &"VBoxContainer"
+FormColumn/constants/separation = 8
+SecondaryButton/base_type = &"Button"
+SecondaryButton/colors/font_color = Color(0.141176, 0.239216, 0.286275, 1)
+SecondaryButton/colors/font_hover_color = Color(0.141176, 0.239216, 0.286275, 1)
+SecondaryButton/colors/font_pressed_color = Color(0.141176, 0.239216, 0.286275, 1)
+SecondaryButton/colors/font_focus_color = Color(0.141176, 0.239216, 0.286275, 1)
+SecondaryButton/styles/normal = SubResource("quiet")
+SecondaryButton/styles/hover = SubResource("quiet_hover")
+SecondaryButton/styles/pressed = SubResource("quiet_pressed")
+SecondaryButton/styles/hover_pressed = SubResource("quiet_pressed")
+SecondaryButton/styles/focus = SubResource("focus")
+SecondaryButton/styles/disabled = SubResource("disabled")

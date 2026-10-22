@@ -1,0 +1,14 @@
+PASS registro con jugador propio y monedas asignadas por servidor
+PASS contraseña bcrypt coste 12 y token almacenado como SHA-256
+PASS duplicado sin distinguir mayúsculas y entradas inválidas rechazados
+PASS login válido e inválido; errores sin revelar existencia de cuenta
+PASS pedidos filtrados por sesión: sin acceso a otro usuario ni a pedidos sin dueño
+PASS identidad derivada de sesión; datos ajenos y escrituras antiguas bloqueados
+PASS registro concurrente: una cuenta y ningún jugador huérfano
+PASS sesión persistente después de reiniciar Jugadores
+PASS caducidad desde PostgreSQL sin invalidar otra sesión activa
+PASS logout revoca el token y su repetición es idempotente
+PASS gRPC directo también exige sesión
+PASS jugadores anteriores conservados sin asignación de cuentas
+PASS limpieza exclusiva de cuentas, sesiones y jugadores de prueba
+AUTH_VALIDATION failures=0

@@ -65,3 +65,10 @@ No afirmar que esos PNG han sido remasterizados.
 ## Copias
 Los archivos de código/configuración y escenas modificados se respaldan en .ui-backup.
 Los PNG originales del juego permanecen intactos.
+
+## Autenticación integrada
+AuthPanel.gd reutiliza los paneles y botones existentes para bienvenida, login, registro y cuenta.
+El tema incluye LineEdit sin suavizado, contraseña con asteriscos, SecondaryButton y ErrorLabel.
+No se añadieron recursos gráficos ni tipografía. Capturas reales en docs/fase4/ui.
+Los campos y modales capturan entrada; no se admiten interacciones de comercio mientras están abiertos.
+Los comercios quedan en consulta hasta completar las compras seguras de la fase 5.

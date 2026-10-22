@@ -1,0 +1,5 @@
+syntax = "proto3";
+package penguin.v1;
+option go_package = "pixelpenguin/platform/gen/penguin/v1;penguinv1";
+message Empty {}
+message IdRequest { int64 id = 1; }

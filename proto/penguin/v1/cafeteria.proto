@@ -1,0 +1,12 @@
+syntax = "proto3";
+package penguin.v1;
+option go_package = "pixelpenguin/platform/gen/penguin/v1;penguinv1";
+import "penguin/v1/common.proto";
+message Order { int64 id = 1; string product = 2; int32 quantity = 3; string status = 4; int64 player_id = 5; }
+message OrderList { repeated Order orders = 1; }
+message CreateOrderRequest { string product = 1; int32 quantity = 2; int64 player_id = 3; }
+service Cafeteria {
+  rpc ListOrders(Empty) returns (OrderList);
+  rpc GetOrder(IdRequest) returns (Order);
+  rpc CreateOrder(CreateOrderRequest) returns (Order);
+}

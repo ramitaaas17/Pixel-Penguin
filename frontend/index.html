@@ -2,40 +2,20 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Pinguinolandia - Panel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Pixel-Penguin · Plaza del Deshielo</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Pinguinolandia - Sistema Distribuido</h1>
-
-    <section>
-        <h2>Jugadores</h2>
-        <input id="jugadorNombre" placeholder="nombre">
-        <input id="jugadorMonedas" placeholder="monedas">
-        <button onclick="crearJugador()">Crear jugador</button>
-        <button onclick="listarJugadores()">Ver jugadores</button>
-        <ul id="listaJugadores"></ul>
-    </section>
-
-    <section>
-        <h2>Tienda</h2>
-        <input id="productoNombre" placeholder="nombre">
-        <input id="productoPrecio" placeholder="precio">
-        <input id="productoStock" placeholder="stock">
-        <button onclick="crearProducto()">Crear producto</button>
-        <button onclick="listarProductos()">Ver productos</button>
-        <ul id="listaProductos"></ul>
-    </section>
-
-    <section>
-        <h2>Cafeteria</h2>
-        <input id="pedidoProducto" placeholder="producto">
-        <input id="pedidoCantidad" placeholder="cantidad">
-        <button onclick="crearPedido()">Crear pedido</button>
-        <button onclick="listarPedidos()">Ver pedidos</button>
-        <ul id="listaPedidos"></ul>
-    </section>
-
-    <script src="app.js"></script>
+    <main>
+        <p class="eyebrow">PIXEL-PENGUIN</p>
+        <h1>Nos vemos en la plaza.</h1>
+        <p>Un pequeño lugar entre nieve, café y pingüinos.</p>
+        <section aria-labelledby="play-title">
+            <h2 id="play-title">Entra a la plaza</h2>
+            <p><a href="/game/">Jugar en el navegador</a>. También puedes abrir el proyecto desde Godot.</p>
+            <p>Desde el juego puedes crear tu cuenta, iniciar sesión o pasear como invitado. Las compras y el chat se incorporarán en las próximas etapas.</p>
+        </section>
+    </main>
 </body>
 </html>

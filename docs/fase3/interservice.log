@@ -1,0 +1,21 @@
+cafeteria-service-1  | 2026/10/22 05:43:17 instance=cafeteria-service rpc=/penguin.v1.Cafeteria/ListOrders
+cafeteria-service-1  | 2026/10/22 05:43:24 instance=cafeteria-service rpc=/penguin.v1.Cafeteria/CreateOrder
+cafeteria-service-1  | 2026/10/22 05:43:24 validated player via Players.GetPlayer player_id=4
+cafeteria-service-1  | 2026/10/22 05:43:25 instance=cafeteria-service rpc=/penguin.v1.Cafeteria/GetOrder
+cafeteria-service-1  | 2026/10/22 05:43:25 instance=cafeteria-service rpc=/penguin.v1.Cafeteria/CreateOrder
+cafeteria-service-1  | 2026/10/22 05:43:28 instance=cafeteria-service rpc=/penguin.v1.Cafeteria/CreateOrder
+cafeteria-service-1  | 2026/10/22 05:43:30 instance=cafeteria-service rpc=/penguin.v1.Cafeteria/CreateOrder
+cafeteria-service-1  | 2026/10/22 05:43:35 instance=cafeteria-service rpc=/penguin.v1.Cafeteria/GetOrder
+cafeteria-service-1  | 2026/10/22 05:43:35 instance=cafeteria-service rpc=/penguin.v1.Cafeteria/GetOrder
+jugadores-service-1  | 2026/10/22 05:43:16 instance=jugadores-service rpc=/penguin.v1.Players/ListPlayers
+jugadores-service-1  | 2026/10/22 05:43:18 instance=jugadores-service rpc=/penguin.v1.Players/CreatePlayer
+jugadores-service-1  | 2026/10/22 05:43:19 instance=jugadores-service rpc=/penguin.v1.Players/UpdateCoins
+jugadores-service-1  | 2026/10/22 05:43:20 instance=jugadores-service rpc=/penguin.v1.Players/GetPlayer
+jugadores-service-1  | 2026/10/22 05:43:24 instance=jugadores-service rpc=/penguin.v1.Players/GetPlayer
+jugadores-service-1  | 2026/10/22 05:43:25 instance=jugadores-service rpc=/penguin.v1.Players/GetPlayer
+jugadores-service-1  | 2026/10/22 05:43:26 instance=jugadores-service rpc=/penguin.v1.Players/GetPlayer
+jugadores-service-1  | 2026/10/22 05:43:27 instance=jugadores-service rpc=/penguin.v1.Players/UpdateCoins
+jugadores-service-1  | 2026/10/22 05:43:28 instance=jugadores-service rpc=/penguin.v1.Players/GetPlayer
+jugadores-service-1  | 2026/10/22 05:43:35 instance=jugadores-service rpc=/penguin.v1.Players/GetPlayer
+cafeteria-service-1  | 2026/10/22 05:44:45 instance=cafeteria-service rpc=/penguin.v1.Cafeteria/ListOrders
+jugadores-service-1  | 2026/10/22 05:44:45 instance=jugadores-service rpc=/penguin.v1.Players/ListPlayers

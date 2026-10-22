@@ -17,6 +17,7 @@ var panel_comercio: CanvasLayer = null
 @onready var animacion: AnimationPlayer = $AnimationPlayer
 
 func _ready() -> void:
+	add_to_group("commerce")
 	mouse_entered.connect(_on_mouse_entered)
 	mouse_exited.connect(_on_mouse_exited)
 	body_entered.connect(_on_body_entered)
@@ -60,6 +61,7 @@ func _abrir_panel() -> void:
 	var caja: VBoxContainer = window.body
 	var monedas_label := UI.label("Tus monedas: %d" % EstadoJuego.monedas, "SecondaryLabel")
 	caja.add_child(monedas_label)
+	caja.add_child(UI.wrapped_label("Compras en preparación. Por ahora puedes consultar el catálogo.", "SecondaryLabel"))
 	conexion_monedas = func(m):
 		if is_instance_valid(monedas_label):
 			monedas_label.text = "Tus monedas: %d" % m
@@ -92,23 +94,8 @@ func _cargar_productos_tienda(lista: VBoxContainer) -> void:
 			return
 		for producto in datos:
 			var texto := "%s · $%s · Stock: %d" % [producto["nombre"], str(producto["precio"]), producto["stock"]]
-			UI.product_row(lista, texto, producto["stock"] <= 0 or EstadoJuego.monedas < producto["precio"],
-				func(): _comprar_producto(producto, lista))
-	)
-
-func _comprar_producto(producto: Dictionary, lista: VBoxContainer) -> void:
-	var nuevas_monedas: int = EstadoJuego.monedas - int(producto["precio"])
-	var nuevo_stock: int = int(producto["stock"]) - 1
-	print("[", name, "] comprando ", producto["nombre"], " jugador_id=", EstadoJuego.jugador_id)
-	Api.jugador_actualizar_monedas(EstadoJuego.jugador_id, nuevas_monedas, func(codigo_j, _datos_j):
-		print("[", name, "] respuesta actualizar monedas codigo=", codigo_j)
-		if codigo_j != 200:
-			return
-		EstadoJuego.actualizar_monedas(nuevas_monedas)
-		Api.tienda_actualizar_stock(producto["id"], nuevo_stock, func(_codigo_p, _datos_p):
-			if is_instance_valid(lista):
-				_cargar_productos_tienda(lista)
-		)
+			UI.product_row(lista, texto, true,
+				func(): pass)
 	)
 
 func _cargar_menu_cafeteria(lista: VBoxContainer) -> void:
@@ -116,18 +103,4 @@ func _cargar_menu_cafeteria(lista: VBoxContainer) -> void:
 		hijo.queue_free()
 	for item in MENU_CAFETERIA:
 		UI.product_row(lista, "%s · $%d" % [item["producto"], item["precio"]],
-			EstadoJuego.monedas < item["precio"], func(): _comprar_cafeteria(item, lista))
-
-func _comprar_cafeteria(item: Dictionary, lista: VBoxContainer) -> void:
-	var nuevas_monedas: int = EstadoJuego.monedas - int(item["precio"])
-	print("[", name, "] comprando ", item["producto"], " jugador_id=", EstadoJuego.jugador_id)
-	Api.jugador_actualizar_monedas(EstadoJuego.jugador_id, nuevas_monedas, func(codigo_j, _datos_j):
-		print("[", name, "] respuesta actualizar monedas codigo=", codigo_j)
-		if codigo_j != 200:
-			return
-		EstadoJuego.actualizar_monedas(nuevas_monedas)
-		Api.cafeteria_crear_pedido(item["producto"], 1, func(_codigo_p, _datos_p):
-			if is_instance_valid(lista):
-				_cargar_menu_cafeteria(lista)
-		)
-	)
+			true, func(): pass)

@@ -29,6 +29,7 @@ func _run() -> void:
     check(bancas == 2, "Solo dos bancas en la plaza")
     for nombre in ["Cafeteria", "Tienda", "Club", "Fuente"]:
         check(not plaza.get_node(nombre).has_node("Sombra"), "Sin sombra ovalada en " + nombre)
+    check(not plaza.has_method("_spawn_npc"), "Plaza sin NPC simulados")
     var fuente := plaza.get_node("Fuente")
     var frame_inicial: int = fuente.get_node("Sprite2D").frame
     check(not fuente.animado and not fuente.is_processing(), "Fuente sin animación ni proceso")
@@ -63,12 +64,6 @@ func _run() -> void:
         check(jugador.global_position.distance_to(entrada) < 12, "Llegada física a " + nombre)
         await physics_frame
         check(plaza.get_node(nombre).pinguino_cerca, "Detección en puerta de " + nombre)
-    plaza._spawn_npc(987654, {"nombre": "Prueba", "monedas": 0})
-    check(plaza.pinguinos_npc.size() == 1, "NPC compatible con la plaza")
-    var npc: Node2D = plaza.pinguinos_npc[987654]
-    check(npc.get_node("Sprite2D").scale == Vector2(0.75, 0.75), "Escala del NPC coherente")
-    npc.queue_free()
-    plaza.pinguinos_npc.clear()
     var limite: PackedVector2Array = plaza.ruta_hacia(jugador.global_position, Vector2(2000, 2000))
     check(not limite.is_empty(), "Clic fuera del mapa termina en suelo transitable")
     plaza._mostrar_seleccion_jugador()

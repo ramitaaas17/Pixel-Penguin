@@ -1,0 +1,13 @@
+Godot Engine v4.7.2.stable.fedora.ed1daf0bf - https://godotengine.org
+OpenGL API 4.6 (Core Profile) Mesa 25.3.6 - Compatibility - Using Device: Intel - Mesa Intel(R) Arc(tm) Graphics (MTL)
+
+PASS Bienvenida sin selector libre de jugadores
+PASS Captura welcome
+PASS Contraseña oculta con glifo propio
+PASS Captura login
+PASS Escribir E no mueve ni activa comercios
+PASS Carga termina cuando el servicio no está disponible
+PASS Error de conexión visible sin bloquear la pantalla
+PASS Captura offline
+PASS Invitado puede pasear sin servicio de cuentas
+AUTH_UI_OFFLINE failures=0

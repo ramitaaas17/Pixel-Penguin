@@ -1,14 +1,18 @@
-FROM golang:1.22-alpine AS build
-WORKDIR /app
-COPY go.mod ./
-COPY main.go ./
-COPY models ./models
-COPY controllers ./controllers
-RUN go mod tidy
-RUN go build -o app .
-
-FROM alpine:latest
-WORKDIR /app
-COPY --from=build /app/app .
-EXPOSE 8080
-CMD ["./app"]
+FROM golang:1.26-alpine AS build
+WORKDIR /src
+COPY platform/go.mod platform/go.sum ./platform/
+COPY platform/gen ./platform/gen
+COPY platform/rpcutil ./platform/rpcutil
+COPY platform/session ./platform/session
+COPY platform/registry ./platform/registry
+WORKDIR /src/backend/tienda
+COPY backend/tienda/go.mod backend/tienda/go.sum ./
+RUN go mod download
+COPY backend/tienda/ .
+RUN CGO_ENABLED=0 go build -trimpath -o /service .
+FROM alpine:3.21
+RUN adduser -D app
+COPY --from=build /service /usr/local/bin/service
+USER app
+EXPOSE 8080 9090
+CMD ["service"]
