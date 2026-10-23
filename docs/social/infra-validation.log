@@ -1,0 +1,7 @@
+PASS GET /heartbeat
+PASS GET /middleware/heartbeat
+PASS GET /tienda
+PASS /jugadores exige autenticación
+PASS /cafeteria exige autenticación
+PASS frontend a través del gateway
+PASS ambas instancias atienden peticiones

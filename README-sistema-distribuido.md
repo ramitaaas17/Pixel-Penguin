@@ -9,7 +9,7 @@ La escena principal es `scenes/plaza/Plaza.tscn`. El mapa anterior y sus recurso
 - Actividad 2: Consul y sincronización de destinos saludables con Nginx. Implementación y evidencia: `docs/FASE_2.md`, `docs/fase2/validation.log`.
 - Actividad 3: contratos Protocol Buffers, comunicación gRPC real y balanceo mediante Nginx. Evidencia: `docs/FASE_3.md` y `docs/fase3/`.
 - Fase 4: registro, login, sesiones revocables y pantallas integradas en Godot. Evidencia: `docs/FASE_4.md`.
-- No hay NPC activos, presencia sincronizada ni chat. Los comercios están temporalmente en consulta hasta implementar las compras seguras de la fase 5.
+- Chat global autenticado, presencia y movimiento compartido entre clientes Web y nativos: `docs/CHAT_Y_PRESENCIA.md`. Sin NPC activos. Los comercios siguen en consulta hasta implementar las compras seguras de la fase 5.
 
 La web abre el juego Godot exportado a WebAssembly, con la misma plaza, registro y login que la aplicación nativa. Detalles: `docs/WEB.md`. Las escrituras antiguas de monedas, stock y pedidos están bloqueadas tanto por HTTP como por gRPC; el servidor determina la identidad a partir de la sesión.
 
@@ -17,7 +17,8 @@ La web abre el juego Godot exportado a WebAssembly, con la misma plaza, registro
 
 ```text
 Godot / Web ── HTTP ──→ Nginx público :3000 / :8000
-                        ├→ Frontend estático
+                        ├→ Frontend estático (juego WebAssembly)
+                        ├→ /plaza WebSocket → sala global del middleware
                         └→ Middleware Go (adaptador HTTP/JSON)
                              └─ gRPC → Nginx interno :9090
                                         ├→ Jugadores + Auth gRPC → PostgreSQL
@@ -32,7 +33,7 @@ Consul → instancias passing → sincronizador Go → upstreams de Nginx
 
 Nginx enruta y balancea. El middleware adapta HTTP/JSON a gRPC; no tiene balanceador propio. Cafetería consulta Auth.GetSession para recuperar la identidad y filtrar pedidos privados.
 Los servicios mantienen HTTP 8080 únicamente para salud local y gRPC 9090 para negocio. Los puertos internos no se publican; el gateway recibe HTTP externo y gRPC interno en recorridos separados. `services.json` ya no existe.
-La comunicación gRPC usa HTTP/2 sin TLS dentro de la red privada de desarrollo. No se implementó WebSocket; corresponde al chat posterior.
+La comunicación gRPC usa HTTP/2 sin TLS dentro de la red privada de desarrollo. `/plaza` usa WebSocket para chat y presencia; una sola instancia del middleware coordina la sala y valida sesiones por gRPC. No se soportan réplicas de esa sala sin coordinación adicional.
 
 ## Ejecutar
 
@@ -198,5 +199,12 @@ Repetir compilación y análisis en `backend/jugadores`, `backend/tienda`, `back
 
 ## Próxima actividad y commits
 
-Siguiente fase: compras seguras con intención de compra, precios del servidor, control de concurrencia, idempotencia y coordinación entre bases. Después: chat autenticado.
+Siguiente fase: compras seguras con intención de compra, precios del servidor, control de concurrencia, idempotencia y coordinación entre bases. Chat y presencia se adelantaron por petición del usuario.
 No se realizaron commits automáticos. Grupos de revisión: retirada de NPC; actividad 1; actividad 2 y retirada del panel web heredado; actividad 3 y adaptación HTTP/gRPC; fase 4 de autenticación e interfaz. No hay hashes nuevos que atribuir a las actividades.
+
+
+## Chat y presencia
+
+Abrir http://localhost:3000 en dos ventanas con cuentas distintas. Pulsar Chat de la plaza o Enter para conversar; ESC pliega el panel. Los jugadores conectados aparecen con su nombre y sus movimientos se comparten. Invitados pueden explorar, pero no envían mensajes ni aparecen en la sala. Una cuenta abierta en otra ventana transfiere su conexión.
+
+La sala conserva 50 mensajes en memoria, se recupera mediante snapshot al reconectar y revalida sesiones por gRPC cada cinco segundos. Reiniciar el middleware borra ese historial efímero; PostgreSQL conserva las cuentas. No se soportan varias réplicas del middleware ni colisiones autoritativas en el servidor. Arquitectura, límites, comandos y evidencias: `docs/CHAT_Y_PRESENCIA.md`.

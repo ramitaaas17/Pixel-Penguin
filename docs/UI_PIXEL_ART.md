@@ -72,3 +72,8 @@ El tema incluye LineEdit sin suavizado, contraseña con asteriscos, SecondaryBut
 No se añadieron recursos gráficos ni tipografía. Capturas reales en docs/fase4/ui.
 Los campos y modales capturan entrada; no se admiten interacciones de comercio mientras están abiertos.
 Los comercios quedan en consulta hasta completar las compras seguras de la fase 5.
+
+
+## Chat y presencia real
+
+ChatPanel.gd reutiliza PixelUI, el tema y PixelButton; panel plegable a la izquierda, historial de 50 mensajes con scroll, campo de 180 caracteres y estado con tooltip. Enter enfoca y ESC pliega. Los invitados no publican mensajes. RemotePenguin.gd reutiliza sprite, escala, sombra y NameLabel del juego, sin NPC ni recursos gráficos nuevos. Capturas verificables y pruebas: docs/social y docs/CHAT_Y_PRESENCIA.md.

@@ -1,0 +1,18 @@
+Godot Engine v4.7.2.stable.fedora.ed1daf0bf - https://godotengine.org
+
+PASS Invitado no abre una conexión de presencia
+PASS Chat plegado y protegido para invitados
+PASS El invitado puede consultar el estado del chat
+PASS Panel compacto dentro del área de juego
+PASS Abrir chat enfoca el campo de texto
+PASS Escribir E llega al chat
+PASS Escribir no mueve al pingüino
+PASS Escribir no abre Cafeteria
+PASS Escribir no abre Tienda
+PASS Escribir no abre Club
+PASS Escribir no abre Fuente
+PASS Historial sin filas duplicadas
+PASS Historial conserva español y acentos
+PASS ESC cierra chat y libera teclado
+PASS Abrir y cerrar no duplica señales
+CHAT_UI_VALIDATION failures=0

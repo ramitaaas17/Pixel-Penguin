@@ -5,6 +5,7 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 	"log"
 	"middleware/api"
+	"middleware/plaza"
 	"net/http"
 	"os"
 	pb "pixelpenguin/platform/gen/penguin/v1"
@@ -22,6 +23,9 @@ func main() {
 	}
 	defer connection.Close()
 	handler := api.New(pb.NewPlayersClient(connection), pb.NewStoreClient(connection), pb.NewCafeteriaClient(connection), pb.NewAuthClient(connection))
-	server := &http.Server{Addr: ":8000", Handler: handler, ReadHeaderTimeout: 5 * time.Second, ReadTimeout: 10 * time.Second, WriteTimeout: 15 * time.Second, IdleTimeout: 60 * time.Second}
+	mux := http.NewServeMux()
+	mux.Handle("/plaza", plaza.NewHub().Handler(pb.NewAuthClient(connection)))
+	mux.Handle("/", handler)
+	server := &http.Server{Addr: ":8000", Handler: mux, ReadHeaderTimeout: 5 * time.Second, ReadTimeout: 10 * time.Second, WriteTimeout: 15 * time.Second, IdleTimeout: 60 * time.Second}
 	log.Fatal(server.ListenAndServe())
 }

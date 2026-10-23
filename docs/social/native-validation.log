@@ -1,0 +1,11 @@
+Godot Engine v4.7.2.stable.fedora.ed1daf0bf - https://godotengine.org
+
+PASS Godot nativo autentica el WebSocket real
+PASS Snapshot contiene la identidad autenticada
+PASS Godot nativo envía chat
+PASS Servidor confirma mensaje español con identidad real
+PASS Posición recorrida por A* confirmada por el servidor
+PASS Logout real confirma revocación
+PASS Servidor desconecta la sesión revocada y Godot limpia su identidad
+SOCIAL_NATIVE_VALIDATION failures=0
+PASS cuenta temporal nativa eliminada

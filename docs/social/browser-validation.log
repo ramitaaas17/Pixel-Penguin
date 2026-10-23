@@ -1,0 +1,8 @@
+PASS dos juegos Godot independientes comparten presencia autenticada
+PASS el movimiento de un jugador llega al otro cliente
+PASS mensajes bidireccionales con mismo orden e identidad; escribir E no mueve al jugador
+PASS ambos juegos reconectan y reconstruyen la sala tras reiniciar el servidor
+PASS revocar sesión desconecta el chat y elimina la presencia
+PASS token falso, suplantación, texto excesivo y teletransporte rechazados; sin bucle al abrir otra ventana
+SOCIAL_VALIDATION failures=0
+PASS cuentas temporales eliminadas

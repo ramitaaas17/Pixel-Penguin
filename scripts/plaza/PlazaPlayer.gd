@@ -5,6 +5,9 @@ func _unhandled_input(event: InputEvent) -> void:
     if not habilitado:
         return
     if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+        var focus := get_viewport().gui_get_focus_owner()
+        if focus is LineEdit or focus is TextEdit:
+            focus.release_focus()
         ir_a(get_global_mouse_position())
 
 func ir_a(punto: Vector2) -> void:

@@ -32,7 +32,7 @@ La recarga del gateway renueva la resolución del contenedor frontend si cambió
 
 Se mantiene la resolución base 960 × 600, escalado entero y tema pixel art. Usar un navegador con WebGL 2 y una ventana de al menos 960 × 600 para la distribución existente. No se ha adaptado el diseño a teléfonos. El modo sin hilos evita requerir SharedArrayBuffer/aislamiento entre orígenes: https://docs.godotengine.org/en/stable/tutorials/export/exporting_for_web.html.
 
-Las sesiones siguen en memoria: recargar la pestaña requiere iniciar sesión nuevamente. Compras seguras, chat y presencia de otros jugadores siguen pendientes. Para publicar fuera del equipo se necesita HTTPS y configurar el servidor; esta entrega activa únicamente el servicio local existente.
+Las sesiones siguen en memoria: recargar la pestaña requiere iniciar sesión nuevamente. Chat y presencia de otros jugadores ya están integrados; véase `CHAT_Y_PRESENCIA.md`. Las compras seguras siguen pendientes. Para publicar fuera del equipo se necesita HTTPS y configurar el servidor; esta entrega activa únicamente el servicio local existente.
 
 ## Verificación
 

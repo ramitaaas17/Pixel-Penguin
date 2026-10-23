@@ -1,0 +1,32 @@
+Godot Engine v4.7.2.stable.fedora.ed1daf0bf - https://godotengine.org
+
+PASS La escena carga
+PASS Terreno modular construido
+PASS Solo dos bancas en la plaza
+PASS Sin sombra ovalada en Cafeteria
+PASS Sin sombra ovalada en Tienda
+PASS Sin sombra ovalada en Club
+PASS Sin sombra ovalada en Fuente
+PASS Plaza sin NPC simulados
+PASS Fuente sin animación ni proceso
+PASS Ruta hacia Cafeteria
+PASS Entrada accesible Cafeteria
+PASS Ruta hacia Tienda
+PASS Entrada accesible Tienda
+PASS Ruta hacia Club
+PASS Entrada accesible Club
+PASS Ruta rodea la fuente
+PASS El personaje llega caminando
+PASS Escala uniforme del personaje
+PASS Sin interacción remota
+PASS Llegada física a Cafeteria
+PASS Detección en puerta de Cafeteria
+PASS Llegada física a Tienda
+PASS Detección en puerta de Tienda
+PASS Llegada física a Club
+PASS Detección en puerta de Club
+PASS Clic fuera del mapa termina en suelo transitable
+PASS Selección disponible desde el paseo
+PASS Paseo local sin cuenta
+PASS Fuente conserva el mismo fotograma durante el paseo
+PLAZA_VALIDATION failures=0

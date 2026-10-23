@@ -25,12 +25,23 @@ http {
         proxy_send_timeout 15s;
         proxy_next_upstream error timeout http_502 http_503 http_504;
         proxy_next_upstream_tries 2;
-        proxy_set_header Host $host;
+        proxy_set_header Host $http_host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         add_header X-Gateway nginx always;
         location = /heartbeat { default_type text/plain; return 200 "nginx alive\n"; }
         location = /middleware/heartbeat { proxy_pass http://middleware:8000/heartbeat; }
+        location = /plaza {
+            proxy_pass http://middleware:8000;
+            proxy_http_version 1.1;
+            proxy_set_header Host $http_host;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection "upgrade";
+            proxy_read_timeout 75s;
+            proxy_send_timeout 75s;
+            proxy_buffering off;
+            proxy_next_upstream off;
+        }
         location /auth/ {
             limit_req zone=auth burst=10 nodelay;
             limit_req_status 429;
