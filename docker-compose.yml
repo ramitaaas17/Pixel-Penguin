@@ -1,4 +1,49 @@
 services:
+  kafka:
+    image: apache/kafka:4.1.2
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_LOG_DIRS: /var/lib/kafka/data
+    volumes:
+      - kafka-data:/var/lib/kafka/data
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/kafka/bin/kafka-topics.sh --bootstrap-server kafka:9092 --list >/dev/null 2>&1"]
+      interval: 10s
+      timeout: 10s
+      retries: 20
+    networks: [appnet]
+  kafka-topics:
+    image: apache/kafka:4.1.2
+    depends_on:
+      kafka:
+        condition: service_healthy
+    entrypoint: ["/bin/sh", "-ec"]
+    command:
+      - |
+        for service in jugadores tienda cafeteria; do
+          /opt/kafka/bin/kafka-topics.sh --bootstrap-server kafka:9092 --create --if-not-exists --topic pixelpenguin.$$service --partitions 3 --replication-factor 1
+        done
+    networks: [appnet]
+  kafka-rest:
+    image: confluentinc/cp-kafka-rest:8.0.0
+    environment:
+      KAFKA_REST_HOST_NAME: kafka-rest
+      KAFKA_REST_BOOTSTRAP_SERVERS: kafka:9092
+      KAFKA_REST_LISTENERS: http://0.0.0.0:8082
+      KAFKA_REST_PRODUCER_ACKS: all
+    depends_on:
+      kafka-topics:
+        condition: service_completed_successfully
+    networks: [appnet]
   consul:
     image: hashicorp/consul:1.22
     command: ["agent", "-server", "-bootstrap-expect=1", "-client=0.0.0.0", "-bind=0.0.0.0", "-data-dir=/consul/data"]
@@ -32,6 +77,7 @@ services:
       dockerfile: backend/jugadores/Dockerfile
     environment:
       CONSUL_HTTP_ADDR: http://consul:8500
+      KAFKA_REST_URL: http://kafka-rest:8082
       SERVICE_NAME: jugadores
       DB_HOST: db-jugadores
       DB_PORT: "5432"
@@ -72,6 +118,7 @@ services:
       context: .
       dockerfile: backend/tienda/Dockerfile
     environment:
+      KAFKA_REST_URL: http://kafka-rest:8082
       CONSUL_HTTP_ADDR: http://consul:8500
       GRPC_GATEWAY_ADDR: gateway:9090
       SERVICE_NAME: tienda
@@ -98,6 +145,7 @@ services:
       context: .
       dockerfile: backend/tienda/Dockerfile
     environment:
+      KAFKA_REST_URL: http://kafka-rest:8082
       CONSUL_HTTP_ADDR: http://consul:8500
       GRPC_GATEWAY_ADDR: gateway:9090
       SERVICE_NAME: tienda
@@ -140,6 +188,7 @@ services:
       context: .
       dockerfile: backend/cafeteria/Dockerfile
     environment:
+      KAFKA_REST_URL: http://kafka-rest:8082
       CONSUL_HTTP_ADDR: http://consul:8500
       GRPC_GATEWAY_ADDR: gateway:9090
       SERVICE_NAME: cafeteria
@@ -231,3 +280,4 @@ volumes:
   tienda-data:
   cafeteria-data:
   consul-data:
+  kafka-data:

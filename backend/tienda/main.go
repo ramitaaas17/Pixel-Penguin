@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"pixelpenguin/platform/messaging"
 	"pixelpenguin/platform/registry"
 	"time"
 
@@ -56,6 +57,11 @@ func main() {
 		log.Fatal(err)
 	}
 	defer authConnection.Close()
+	stopMessages, err := messaging.Start(db, "tienda", "productos")
+	if err != nil {
+		log.Fatal("no se pudo iniciar mensajería: ", err)
+	}
+	defer stopMessages()
 	grpcServer := grpc.NewServer(grpc.MaxRecvMsgSize(64<<10), grpc.UnaryInterceptor(rpcutil.InstanceHeader(os.Getenv("INSTANCE_NAME"))))
 	pb.RegisterStoreServer(grpcServer, backendrpc.New(&models.ProductoModel{Db: db}, pb.NewAuthClient(authConnection)))
 	rpcutil.RegisterHealth(grpcServer, db)

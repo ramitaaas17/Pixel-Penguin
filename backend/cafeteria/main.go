@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"pixelpenguin/platform/messaging"
 	"pixelpenguin/platform/registry"
 	"time"
 
@@ -59,6 +60,11 @@ func main() {
 		log.Fatal(err)
 	}
 	defer playerConnection.Close()
+	stopMessages, err := messaging.Start(db, "cafeteria", "pedidos")
+	if err != nil {
+		log.Fatal("no se pudo iniciar mensajería: ", err)
+	}
+	defer stopMessages()
 	grpcServer := grpc.NewServer(grpc.MaxRecvMsgSize(64<<10), grpc.UnaryInterceptor(rpcutil.InstanceHeader(os.Getenv("INSTANCE_NAME"))))
 	pb.RegisterCafeteriaServer(grpcServer, backendrpc.New(&models.PedidoModel{Db: db}, pb.NewAuthClient(playerConnection)))
 	rpcutil.RegisterHealth(grpcServer, db)

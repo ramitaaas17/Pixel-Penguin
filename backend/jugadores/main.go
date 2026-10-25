@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"pixelpenguin/platform/messaging"
 	"pixelpenguin/platform/registry"
 	"time"
 
@@ -58,6 +59,11 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	stopMessages, err := messaging.Start(db, "jugadores", "jugadores")
+	if err != nil {
+		log.Fatal("no se pudo iniciar mensajería: ", err)
+	}
+	defer stopMessages()
 	grpcServer := grpc.NewServer(grpc.MaxRecvMsgSize(64<<10), grpc.UnaryInterceptor(rpcutil.InstanceHeader(os.Getenv("INSTANCE_NAME"))))
 	pb.RegisterPlayersServer(grpcServer, backendrpc.New(&models.JugadorModel{Db: db}, authService))
 	pb.RegisterAuthServer(grpcServer, authService)

@@ -5,6 +5,7 @@ COPY platform/gen ./platform/gen
 COPY platform/rpcutil ./platform/rpcutil
 COPY platform/session ./platform/session
 COPY platform/registry ./platform/registry
+COPY platform/messaging ./platform/messaging
 WORKDIR /src/backend/tienda
 COPY backend/tienda/go.mod backend/tienda/go.sum ./
 RUN go mod download
