@@ -26,6 +26,8 @@ func New(players pb.PlayersClient, store pb.StoreClient, cafeteria pb.CafeteriaC
 	api := &API{players: players, store: store, cafeteria: cafeteria, auth: auth}
 	mux := http.NewServeMux()
 	mux.HandleFunc("/auth/", api.authHandler)
+	mux.HandleFunc("/minijuegos/cafe", api.coffeeHandler)
+	mux.HandleFunc("/minijuegos/cafe/", api.coffeeHandler)
 	mux.HandleFunc("/heartbeat", func(w http.ResponseWriter, r *http.Request) { w.Write([]byte("application alive")) })
 	for _, route := range []string{"/jugadores", "/jugadores/"} {
 		mux.HandleFunc(route, api.playersHandler)

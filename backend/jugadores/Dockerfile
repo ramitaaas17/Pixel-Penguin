@@ -6,6 +6,7 @@ COPY platform/rpcutil ./platform/rpcutil
 COPY platform/session ./platform/session
 COPY platform/registry ./platform/registry
 COPY platform/messaging ./platform/messaging
+COPY platform/coffeegame ./platform/coffeegame
 WORKDIR /src/backend/jugadores
 COPY backend/jugadores/go.mod backend/jugadores/go.sum ./
 RUN go mod download

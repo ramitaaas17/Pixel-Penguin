@@ -1,0 +1,27 @@
+Godot Engine v4.7.2.stable.fedora.ed1daf0bf - https://godotengine.org
+
+PASS Fixture de reglas del servidor disponible
+PASS Godot y Go calculan idénticos puntos, pérdidas, niveles y monedas
+PASS Proximidad real a cafetería
+PASS E abre el minijuego
+PASS La partida bloquea movimiento y chat
+PASS Ventana ampliada dentro de 960 × 600
+COFFEE_ARENA [P: (256.0, 78.0), S: (678.0, 448.0)]
+PASS Área de caída de 448 px de alto, separada del pedido
+PASS Números con glifos pixelados propios sin rasterizado de fuente
+PASS Música original cargada con repetición
+PASS Invitado juega en modo práctica sin cobros ficticios
+PASS Botón de música controla audio
+PASS Clics reales recogen leche y café sin orden fijo
+PASS Cantidades completas sirven una bebida y suman puntos
+PASS Clic duplicado no vuelve a pagar el pedido
+PASS Dejar pasar material necesario resta puntos
+PASS Velocidad y número de nivel progresivos: 2
+PASS Velocidad y número de nivel progresivos: 3
+PASS Velocidad y número de nivel progresivos: 4
+PASS Fin de práctica muestra resultado sin modificar monedas
+PASS Repetir reinicia puntos, pérdidas y nivel
+PASS Salir restaura plaza y chat
+COFFEE_VALIDATION failures=0
+WARNING: 2 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)

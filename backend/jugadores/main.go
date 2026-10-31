@@ -13,6 +13,7 @@ import (
 
 	"google.golang.org/grpc"
 	"jugadores/auth"
+	"jugadores/coffee"
 	"jugadores/models"
 	backendrpc "jugadores/rpc"
 	pb "pixelpenguin/platform/gen/penguin/v1"
@@ -65,7 +66,9 @@ func main() {
 	}
 	defer stopMessages()
 	grpcServer := grpc.NewServer(grpc.MaxRecvMsgSize(64<<10), grpc.UnaryInterceptor(rpcutil.InstanceHeader(os.Getenv("INSTANCE_NAME"))))
-	pb.RegisterPlayersServer(grpcServer, backendrpc.New(&models.JugadorModel{Db: db}, authService))
+	playerServer := backendrpc.New(&models.JugadorModel{Db: db}, authService)
+	playerServer.Coffee = coffee.New(db)
+	pb.RegisterPlayersServer(grpcServer, playerServer)
 	pb.RegisterAuthServer(grpcServer, authService)
 	rpcutil.RegisterHealth(grpcServer, db)
 	mux := http.NewServeMux()

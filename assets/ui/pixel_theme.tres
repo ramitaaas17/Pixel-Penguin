@@ -132,6 +132,16 @@ border = Color(0.207843, 0.333333, 0.388235, 1)
 corner = 4
 depth = 3
 
+[sub_resource type="StyleBox" id="bubble"]
+content_margin_left = 6.0
+content_margin_top = 3.0
+content_margin_right = 6.0
+content_margin_bottom = 3.0
+script = ExtResource("style")
+fill = Color(0.952941, 0.960784, 0.929412, 1)
+border = Color(0.207843, 0.333333, 0.388235, 1)
+depth = 0
+
 [sub_resource type="StyleBox" id="plaque"]
 resource_local_to_scene = false
 resource_name = ""
@@ -189,6 +199,72 @@ border = Color(0.207843, 0.333333, 0.388235, 1)
 corner = 2
 depth = 0
 shift = 2
+
+[sub_resource type="StyleBox" id="coffee_frame"]
+content_margin_left = 18.0
+content_margin_right = 18.0
+content_margin_top = 12.0
+content_margin_bottom = 12.0
+script = ExtResource("style")
+fill = Color(0.952941, 0.960784, 0.929412, 1)
+border = Color(0.207843, 0.333333, 0.388235, 1)
+corner = 4
+depth = 3
+
+[sub_resource type="StyleBox" id="coffee_meter"]
+script = ExtResource("style")
+fill = Color(0.278, 0.482, 0.502, 1)
+border = Color(0.278, 0.482, 0.502, 1)
+corner = 0
+depth = 0
+
+[sub_resource type="FontVariation" id="coffee_font"]
+base_font = ExtResource("font")
+variation_opentype = {&"wght": 600.0}
+
+[sub_resource type="StyleBox" id="coffee_card"]
+content_margin_left = 10.0
+content_margin_right = 10.0
+content_margin_top = 4.0
+content_margin_bottom = 4.0
+script = ExtResource("style")
+fill = Color(0.96, 0.94, 0.86, 1)
+border = Color(0.21, 0.33, 0.39, 1)
+corner = 3
+depth = 1
+
+[sub_resource type="StyleBox" id="coffee_done"]
+content_margin_left = 10.0
+content_margin_right = 10.0
+content_margin_top = 4.0
+content_margin_bottom = 4.0
+script = ExtResource("style")
+fill = Color(0.76, 0.88, 0.76, 1)
+border = Color(0.2, 0.4, 0.3, 1)
+corner = 3
+depth = 1
+
+[sub_resource type="StyleBox" id="coffee_drop"]
+content_margin_left = 4.0
+content_margin_right = 4.0
+content_margin_top = 4.0
+content_margin_bottom = 4.0
+script = ExtResource("style")
+fill = Color(0.96, 0.94, 0.86, 1)
+border = Color(0.21, 0.33, 0.39, 1)
+corner = 4
+depth = 2
+
+[sub_resource type="StyleBox" id="coffee_drop_hover"]
+content_margin_left = 4.0
+content_margin_right = 4.0
+content_margin_top = 4.0
+content_margin_bottom = 4.0
+script = ExtResource("style")
+fill = Color(1, 0.89, 0.6, 1)
+border = Color(0.55, 0.34, 0.15, 1)
+corner = 4
+depth = 2
 
 [resource]
 default_base_scale = 1.0
@@ -286,3 +362,73 @@ SecondaryButton/styles/pressed = SubResource("quiet_pressed")
 SecondaryButton/styles/hover_pressed = SubResource("quiet_pressed")
 SecondaryButton/styles/focus = SubResource("focus")
 SecondaryButton/styles/disabled = SubResource("disabled")
+
+ChatLabel/base_type = &"Label"
+ChatLabel/font_sizes/font_size = 20
+ChatLabel/constants/line_spacing = 5
+ChatLabel/colors/font_color = Color(0.10, 0.18, 0.22, 1)
+ChatInput/base_type = &"LineEdit"
+ChatInput/font_sizes/font_size = 22
+
+ChatBubblePanel/base_type = &"PanelContainer"
+ChatBubblePanel/styles/panel = SubResource("bubble")
+ChatBubbleLabel/base_type = &"Label"
+ChatBubbleLabel/font_sizes/font_size = 16
+ChatBubbleLabel/constants/line_spacing = 1
+ChatBubbleLabel/colors/font_color = Color(0.10, 0.18, 0.22, 1)
+
+CoffeeScreenMargin/base_type = &"MarginContainer"
+CoffeeScreenMargin/constants/margin_top = 16
+CoffeeScreenMargin/constants/margin_bottom = 16
+CoffeeScreenMargin/constants/margin_left = 24
+CoffeeScreenMargin/constants/margin_right = 24
+CoffeeFrame/base_type = &"PanelContainer"
+CoffeeFrame/styles/panel = SubResource("coffee_frame")
+CoffeeColumn/base_type = &"VBoxContainer"
+CoffeeColumn/constants/separation = 6
+CoffeePatience/base_type = &"ProgressBar"
+CoffeePatience/styles/background = SubResource("scroll")
+CoffeePatience/styles/fill = SubResource("coffee_meter")
+
+CoffeeTitle/base_type = &"Label"
+CoffeeTitle/fonts/font = SubResource("coffee_font")
+CoffeeTitle/font_sizes/font_size = 28
+CoffeeTitle/colors/font_color = Color(0.08, 0.16, 0.2, 1)
+CoffeeText/base_type = &"Label"
+CoffeeText/fonts/font = SubResource("coffee_font")
+CoffeeText/font_sizes/font_size = 24
+CoffeeText/colors/font_color = Color(0.08, 0.16, 0.2, 1)
+CoffeeNumber/base_type = &"Label"
+CoffeeNumber/fonts/font = SubResource("coffee_font")
+CoffeeNumber/font_sizes/font_size = 28
+CoffeeNumber/colors/font_color = Color(0.08, 0.16, 0.2, 1)
+CoffeeSmall/base_type = &"Label"
+CoffeeSmall/fonts/font = SubResource("coffee_font")
+CoffeeSmall/font_sizes/font_size = 22
+CoffeeSmall/colors/font_color = Color(0.08, 0.16, 0.2, 1)
+CoffeeError/base_type = &"Label"
+CoffeeError/fonts/font = SubResource("coffee_font")
+CoffeeError/font_sizes/font_size = 24
+CoffeeError/colors/font_color = Color(0.55, 0.16, 0.13, 1)
+CoffeeButton/base_type = &"Button"
+CoffeeButton/fonts/font = SubResource("coffee_font")
+CoffeeButton/font_sizes/font_size = 24
+CoffeeQuietButton/base_type = &"Button"
+CoffeeQuietButton/fonts/font = SubResource("coffee_font")
+CoffeeQuietButton/font_sizes/font_size = 22
+CoffeeRecipeCard/base_type = &"PanelContainer"
+CoffeeRecipeCard/styles/panel = SubResource("coffee_card")
+CoffeeRecipeDone/base_type = &"PanelContainer"
+CoffeeRecipeDone/styles/panel = SubResource("coffee_done")
+CoffeeDrop/base_type = &"Button"
+CoffeeDrop/styles/normal = SubResource("coffee_drop")
+CoffeeDrop/styles/hover = SubResource("coffee_drop_hover")
+CoffeeDrop/styles/pressed = SubResource("coffee_drop_hover")
+CoffeeDrop/styles/disabled = SubResource("coffee_drop")
+CoffeeDrop/colors/icon_disabled_color = Color(1, 1, 1, 1)
+
+CoffeeWideMargin/base_type = &"MarginContainer"
+CoffeeWideMargin/constants/margin_left = 8
+CoffeeWideMargin/constants/margin_right = 8
+CoffeeWideMargin/constants/margin_top = 8
+CoffeeWideMargin/constants/margin_bottom = 8

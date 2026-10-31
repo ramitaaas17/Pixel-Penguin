@@ -5,10 +5,12 @@ const PLAYER_SCENE := preload("res://scenes/personaje/CaminarDerecha.tscn")
 const HUD_SCRIPT := preload("res://scripts/ui/PixelHUD.gd")
 const PLAZA_CONNECTION := preload("res://scripts/plaza/PlazaConnection.gd")
 const CHAT_PANEL := preload("res://scripts/ui/ChatPanel.gd")
+const CHAT_BUBBLE := preload("res://scripts/ui/ChatBubble.gd")
 const REMOTE_PENGUIN := preload("res://scripts/plaza/RemotePenguin.gd")
 var plazaConnection: Node
 var chatPanel: Control
 var remotePlayers: Dictionary = {}
+var chatBubbles: Dictionary = {}
 var ui_hud: Control
 var caminos := AStarGrid2D.new()
 var bloqueos: Array[Rect2] = []
@@ -31,6 +33,7 @@ func _ready() -> void:
     plazaConnection = PLAZA_CONNECTION.new()
     plazaConnection.localPlayer = player
     plazaConnection.rosterChanged.connect(_updateRemotePlayers)
+    plazaConnection.messageReceived.connect(_showChatBubble)
     add_child(plazaConnection)
     chatPanel = CHAT_PANEL.new()
     chatPanel.connection = plazaConnection
@@ -172,6 +175,11 @@ func _actualizar_hud() -> void:
     ui_hud.elegir.text = "Mi cuenta" if EstadoJuego.tiene_jugador() else "Entrar"
 
 func _updateRemotePlayers() -> void:
+    for id in chatBubbles.keys():
+        if not plazaConnection.players.has(id):
+            if is_instance_valid(chatBubbles[id]):
+                chatBubbles[id].queue_free()
+            chatBubbles.erase(id)
     for id in remotePlayers.keys():
         if not plazaConnection.players.has(id):
             remotePlayers[id].queue_free()
@@ -188,3 +196,15 @@ func _updateRemotePlayers() -> void:
             remotePlayers[id] = remote
         else:
             remotePlayers[id].applyState(data)
+
+func _showChatBubble(message: Dictionary) -> void:
+    var id := int(message.get("playerId", -1))
+    var target: Node2D = jugador_nodo if id == EstadoJuego.jugador_id else remotePlayers.get(id)
+    if not is_instance_valid(target):
+        return
+    if not is_instance_valid(chatBubbles.get(id)):
+        var bubble := CHAT_BUBBLE.new()
+        bubble.target = target
+        interfaz.add_child(bubble)
+        chatBubbles[id] = bubble
+    chatBubbles[id].showMessage(str(message.get("text", "")))

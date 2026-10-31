@@ -8,6 +8,7 @@ signal sessionEnded(expired: bool)
 var jugador_id: int = -1
 var jugador_nombre: String = ""
 var monedas: int = 0
+var pendingCoffee: Dictionary = {}
 var sessionToken: String = ""
 var sessionExpiresAt: int = 0
 
@@ -39,6 +40,7 @@ func acceptSession(data: Dictionary) -> void:
     sessionStarted.emit()
 
 func clearSession(expired: bool = false) -> void:
+    pendingCoffee = {}
     sessionToken = ""
     sessionExpiresAt = 0
     jugador_id = -1

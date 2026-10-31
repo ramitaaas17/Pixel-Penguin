@@ -229,6 +229,338 @@ func (x *UpdateCoinsRequest) GetCoins() int64 {
 	return 0
 }
 
+type CoffeeDrop struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            int32                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Kind          int32                  `protobuf:"varint,2,opt,name=kind,proto3" json:"kind,omitempty"`
+	AtMs          int32                  `protobuf:"varint,3,opt,name=at_ms,json=atMs,proto3" json:"at_ms,omitempty"`
+	UntilMs       int32                  `protobuf:"varint,4,opt,name=until_ms,json=untilMs,proto3" json:"until_ms,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CoffeeDrop) Reset() {
+	*x = CoffeeDrop{}
+	mi := &file_penguin_v1_players_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CoffeeDrop) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CoffeeDrop) ProtoMessage() {}
+
+func (x *CoffeeDrop) ProtoReflect() protoreflect.Message {
+	mi := &file_penguin_v1_players_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CoffeeDrop.ProtoReflect.Descriptor instead.
+func (*CoffeeDrop) Descriptor() ([]byte, []int) {
+	return file_penguin_v1_players_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *CoffeeDrop) GetId() int32 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *CoffeeDrop) GetKind() int32 {
+	if x != nil {
+		return x.Kind
+	}
+	return 0
+}
+
+func (x *CoffeeDrop) GetAtMs() int32 {
+	if x != nil {
+		return x.AtMs
+	}
+	return 0
+}
+
+func (x *CoffeeDrop) GetUntilMs() int32 {
+	if x != nil {
+		return x.UntilMs
+	}
+	return 0
+}
+
+type CoffeePlan struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	RunId         string                 `protobuf:"bytes,1,opt,name=run_id,json=runId,proto3" json:"run_id,omitempty"`
+	DurationMs    int32                  `protobuf:"varint,2,opt,name=duration_ms,json=durationMs,proto3" json:"duration_ms,omitempty"`
+	Recipes       []int32                `protobuf:"varint,3,rep,packed,name=recipes,proto3" json:"recipes,omitempty"`
+	Drops         []*CoffeeDrop          `protobuf:"bytes,4,rep,name=drops,proto3" json:"drops,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CoffeePlan) Reset() {
+	*x = CoffeePlan{}
+	mi := &file_penguin_v1_players_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CoffeePlan) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CoffeePlan) ProtoMessage() {}
+
+func (x *CoffeePlan) ProtoReflect() protoreflect.Message {
+	mi := &file_penguin_v1_players_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CoffeePlan.ProtoReflect.Descriptor instead.
+func (*CoffeePlan) Descriptor() ([]byte, []int) {
+	return file_penguin_v1_players_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *CoffeePlan) GetRunId() string {
+	if x != nil {
+		return x.RunId
+	}
+	return ""
+}
+
+func (x *CoffeePlan) GetDurationMs() int32 {
+	if x != nil {
+		return x.DurationMs
+	}
+	return 0
+}
+
+func (x *CoffeePlan) GetRecipes() []int32 {
+	if x != nil {
+		return x.Recipes
+	}
+	return nil
+}
+
+func (x *CoffeePlan) GetDrops() []*CoffeeDrop {
+	if x != nil {
+		return x.Drops
+	}
+	return nil
+}
+
+type CoffeeAction struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	DropId        int32                  `protobuf:"varint,1,opt,name=drop_id,json=dropId,proto3" json:"drop_id,omitempty"`
+	AtMs          int32                  `protobuf:"varint,2,opt,name=at_ms,json=atMs,proto3" json:"at_ms,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CoffeeAction) Reset() {
+	*x = CoffeeAction{}
+	mi := &file_penguin_v1_players_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CoffeeAction) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CoffeeAction) ProtoMessage() {}
+
+func (x *CoffeeAction) ProtoReflect() protoreflect.Message {
+	mi := &file_penguin_v1_players_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CoffeeAction.ProtoReflect.Descriptor instead.
+func (*CoffeeAction) Descriptor() ([]byte, []int) {
+	return file_penguin_v1_players_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *CoffeeAction) GetDropId() int32 {
+	if x != nil {
+		return x.DropId
+	}
+	return 0
+}
+
+func (x *CoffeeAction) GetAtMs() int32 {
+	if x != nil {
+		return x.AtMs
+	}
+	return 0
+}
+
+type FinishCoffeeRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	RunId         string                 `protobuf:"bytes,1,opt,name=run_id,json=runId,proto3" json:"run_id,omitempty"`
+	Actions       []*CoffeeAction        `protobuf:"bytes,2,rep,name=actions,proto3" json:"actions,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *FinishCoffeeRequest) Reset() {
+	*x = FinishCoffeeRequest{}
+	mi := &file_penguin_v1_players_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *FinishCoffeeRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FinishCoffeeRequest) ProtoMessage() {}
+
+func (x *FinishCoffeeRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_penguin_v1_players_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use FinishCoffeeRequest.ProtoReflect.Descriptor instead.
+func (*FinishCoffeeRequest) Descriptor() ([]byte, []int) {
+	return file_penguin_v1_players_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *FinishCoffeeRequest) GetRunId() string {
+	if x != nil {
+		return x.RunId
+	}
+	return ""
+}
+
+func (x *FinishCoffeeRequest) GetActions() []*CoffeeAction {
+	if x != nil {
+		return x.Actions
+	}
+	return nil
+}
+
+type CoffeeResult struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Score         int64                  `protobuf:"varint,1,opt,name=score,proto3" json:"score,omitempty"`
+	Coins         int64                  `protobuf:"varint,2,opt,name=coins,proto3" json:"coins,omitempty"`
+	Balance       int64                  `protobuf:"varint,3,opt,name=balance,proto3" json:"balance,omitempty"`
+	Served        int32                  `protobuf:"varint,4,opt,name=served,proto3" json:"served,omitempty"`
+	Lost          int32                  `protobuf:"varint,5,opt,name=lost,proto3" json:"lost,omitempty"`
+	Wrong         int32                  `protobuf:"varint,6,opt,name=wrong,proto3" json:"wrong,omitempty"`
+	Level         int32                  `protobuf:"varint,7,opt,name=level,proto3" json:"level,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CoffeeResult) Reset() {
+	*x = CoffeeResult{}
+	mi := &file_penguin_v1_players_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CoffeeResult) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CoffeeResult) ProtoMessage() {}
+
+func (x *CoffeeResult) ProtoReflect() protoreflect.Message {
+	mi := &file_penguin_v1_players_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CoffeeResult.ProtoReflect.Descriptor instead.
+func (*CoffeeResult) Descriptor() ([]byte, []int) {
+	return file_penguin_v1_players_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *CoffeeResult) GetScore() int64 {
+	if x != nil {
+		return x.Score
+	}
+	return 0
+}
+
+func (x *CoffeeResult) GetCoins() int64 {
+	if x != nil {
+		return x.Coins
+	}
+	return 0
+}
+
+func (x *CoffeeResult) GetBalance() int64 {
+	if x != nil {
+		return x.Balance
+	}
+	return 0
+}
+
+func (x *CoffeeResult) GetServed() int32 {
+	if x != nil {
+		return x.Served
+	}
+	return 0
+}
+
+func (x *CoffeeResult) GetLost() int32 {
+	if x != nil {
+		return x.Lost
+	}
+	return 0
+}
+
+func (x *CoffeeResult) GetWrong() int32 {
+	if x != nil {
+		return x.Wrong
+	}
+	return 0
+}
+
+func (x *CoffeeResult) GetLevel() int32 {
+	if x != nil {
+		return x.Level
+	}
+	return 0
+}
+
 var File_penguin_v1_players_proto protoreflect.FileDescriptor
 
 const file_penguin_v1_players_proto_rawDesc = "" +
@@ -247,8 +579,37 @@ const file_penguin_v1_players_proto_rawDesc = "" +
 	"\x05coins\x18\x02 \x01(\x03R\x05coins\":\n" +
 	"\x12UpdateCoinsRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x14\n" +
-	"\x05coins\x18\x02 \x01(\x03R\x05coins2\x83\x02\n" +
-	"\aPlayers\x128\n" +
+	"\x05coins\x18\x02 \x01(\x03R\x05coins\"`\n" +
+	"\n" +
+	"CoffeeDrop\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\x05R\x02id\x12\x12\n" +
+	"\x04kind\x18\x02 \x01(\x05R\x04kind\x12\x13\n" +
+	"\x05at_ms\x18\x03 \x01(\x05R\x04atMs\x12\x19\n" +
+	"\buntil_ms\x18\x04 \x01(\x05R\auntilMs\"\x8c\x01\n" +
+	"\n" +
+	"CoffeePlan\x12\x15\n" +
+	"\x06run_id\x18\x01 \x01(\tR\x05runId\x12\x1f\n" +
+	"\vduration_ms\x18\x02 \x01(\x05R\n" +
+	"durationMs\x12\x18\n" +
+	"\arecipes\x18\x03 \x03(\x05R\arecipes\x12,\n" +
+	"\x05drops\x18\x04 \x03(\v2\x16.penguin.v1.CoffeeDropR\x05drops\"<\n" +
+	"\fCoffeeAction\x12\x17\n" +
+	"\adrop_id\x18\x01 \x01(\x05R\x06dropId\x12\x13\n" +
+	"\x05at_ms\x18\x02 \x01(\x05R\x04atMs\"`\n" +
+	"\x13FinishCoffeeRequest\x12\x15\n" +
+	"\x06run_id\x18\x01 \x01(\tR\x05runId\x122\n" +
+	"\aactions\x18\x02 \x03(\v2\x18.penguin.v1.CoffeeActionR\aactions\"\xac\x01\n" +
+	"\fCoffeeResult\x12\x14\n" +
+	"\x05score\x18\x01 \x01(\x03R\x05score\x12\x14\n" +
+	"\x05coins\x18\x02 \x01(\x03R\x05coins\x12\x18\n" +
+	"\abalance\x18\x03 \x01(\x03R\abalance\x12\x16\n" +
+	"\x06served\x18\x04 \x01(\x05R\x06served\x12\x12\n" +
+	"\x04lost\x18\x05 \x01(\x05R\x04lost\x12\x14\n" +
+	"\x05wrong\x18\x06 \x01(\x05R\x05wrong\x12\x14\n" +
+	"\x05level\x18\a \x01(\x05R\x05level2\x90\x03\n" +
+	"\aPlayers\x12<\n" +
+	"\x0fStartCoffeeGame\x12\x11.penguin.v1.Empty\x1a\x16.penguin.v1.CoffeePlan\x12M\n" +
+	"\x10FinishCoffeeGame\x12\x1f.penguin.v1.FinishCoffeeRequest\x1a\x18.penguin.v1.CoffeeResult\x128\n" +
 	"\vListPlayers\x12\x11.penguin.v1.Empty\x1a\x16.penguin.v1.PlayerList\x126\n" +
 	"\tGetPlayer\x12\x15.penguin.v1.IdRequest\x1a\x12.penguin.v1.Player\x12C\n" +
 	"\fCreatePlayer\x12\x1f.penguin.v1.CreatePlayerRequest\x1a\x12.penguin.v1.Player\x12A\n" +
@@ -266,30 +627,41 @@ func file_penguin_v1_players_proto_rawDescGZIP() []byte {
 	return file_penguin_v1_players_proto_rawDescData
 }
 
-var file_penguin_v1_players_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_penguin_v1_players_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
 var file_penguin_v1_players_proto_goTypes = []any{
 	(*Player)(nil),              // 0: penguin.v1.Player
 	(*PlayerList)(nil),          // 1: penguin.v1.PlayerList
 	(*CreatePlayerRequest)(nil), // 2: penguin.v1.CreatePlayerRequest
 	(*UpdateCoinsRequest)(nil),  // 3: penguin.v1.UpdateCoinsRequest
-	(*Empty)(nil),               // 4: penguin.v1.Empty
-	(*IdRequest)(nil),           // 5: penguin.v1.IdRequest
+	(*CoffeeDrop)(nil),          // 4: penguin.v1.CoffeeDrop
+	(*CoffeePlan)(nil),          // 5: penguin.v1.CoffeePlan
+	(*CoffeeAction)(nil),        // 6: penguin.v1.CoffeeAction
+	(*FinishCoffeeRequest)(nil), // 7: penguin.v1.FinishCoffeeRequest
+	(*CoffeeResult)(nil),        // 8: penguin.v1.CoffeeResult
+	(*Empty)(nil),               // 9: penguin.v1.Empty
+	(*IdRequest)(nil),           // 10: penguin.v1.IdRequest
 }
 var file_penguin_v1_players_proto_depIdxs = []int32{
-	0, // 0: penguin.v1.PlayerList.players:type_name -> penguin.v1.Player
-	4, // 1: penguin.v1.Players.ListPlayers:input_type -> penguin.v1.Empty
-	5, // 2: penguin.v1.Players.GetPlayer:input_type -> penguin.v1.IdRequest
-	2, // 3: penguin.v1.Players.CreatePlayer:input_type -> penguin.v1.CreatePlayerRequest
-	3, // 4: penguin.v1.Players.UpdateCoins:input_type -> penguin.v1.UpdateCoinsRequest
-	1, // 5: penguin.v1.Players.ListPlayers:output_type -> penguin.v1.PlayerList
-	0, // 6: penguin.v1.Players.GetPlayer:output_type -> penguin.v1.Player
-	0, // 7: penguin.v1.Players.CreatePlayer:output_type -> penguin.v1.Player
-	0, // 8: penguin.v1.Players.UpdateCoins:output_type -> penguin.v1.Player
-	5, // [5:9] is the sub-list for method output_type
-	1, // [1:5] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	0,  // 0: penguin.v1.PlayerList.players:type_name -> penguin.v1.Player
+	4,  // 1: penguin.v1.CoffeePlan.drops:type_name -> penguin.v1.CoffeeDrop
+	6,  // 2: penguin.v1.FinishCoffeeRequest.actions:type_name -> penguin.v1.CoffeeAction
+	9,  // 3: penguin.v1.Players.StartCoffeeGame:input_type -> penguin.v1.Empty
+	7,  // 4: penguin.v1.Players.FinishCoffeeGame:input_type -> penguin.v1.FinishCoffeeRequest
+	9,  // 5: penguin.v1.Players.ListPlayers:input_type -> penguin.v1.Empty
+	10, // 6: penguin.v1.Players.GetPlayer:input_type -> penguin.v1.IdRequest
+	2,  // 7: penguin.v1.Players.CreatePlayer:input_type -> penguin.v1.CreatePlayerRequest
+	3,  // 8: penguin.v1.Players.UpdateCoins:input_type -> penguin.v1.UpdateCoinsRequest
+	5,  // 9: penguin.v1.Players.StartCoffeeGame:output_type -> penguin.v1.CoffeePlan
+	8,  // 10: penguin.v1.Players.FinishCoffeeGame:output_type -> penguin.v1.CoffeeResult
+	1,  // 11: penguin.v1.Players.ListPlayers:output_type -> penguin.v1.PlayerList
+	0,  // 12: penguin.v1.Players.GetPlayer:output_type -> penguin.v1.Player
+	0,  // 13: penguin.v1.Players.CreatePlayer:output_type -> penguin.v1.Player
+	0,  // 14: penguin.v1.Players.UpdateCoins:output_type -> penguin.v1.Player
+	9,  // [9:15] is the sub-list for method output_type
+	3,  // [3:9] is the sub-list for method input_type
+	3,  // [3:3] is the sub-list for extension type_name
+	3,  // [3:3] is the sub-list for extension extendee
+	0,  // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_penguin_v1_players_proto_init() }
@@ -304,7 +676,7 @@ func file_penguin_v1_players_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_penguin_v1_players_proto_rawDesc), len(file_penguin_v1_players_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   4,
+			NumMessages:   9,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

@@ -42,6 +42,7 @@ http {
             proxy_buffering off;
             proxy_next_upstream off;
         }
+        location /minijuegos/ { proxy_pass http://middleware:8000; }
         location /auth/ {
             limit_req zone=auth burst=10 nodelay;
             limit_req_status 429;

@@ -3,6 +3,7 @@ package plaza
 import (
 	"context"
 	"encoding/base64"
+	"encoding/json"
 	"net/http/httptest"
 	"strings"
 	"sync"
@@ -21,15 +22,40 @@ func testPeer(id int64) *peer {
 	now := time.Now()
 	return &peer{player: Player{ID: id, Name: "Nieve", X: -32, Y: 148}, outgoing: make(chan []byte, 256), done: make(chan struct{}), lastMove: now, lastChat: now, chatCredit: 3}
 }
-func TestHubHistoryOrderingAndReplacement(t *testing.T) {
+
+// Only tests use immediate delivery; production requires Kafka.
+func localTestHub() *Hub {
 	hub := NewHub()
+	hub.publish = func(message Message) bool {
+		hub.broadcast(map[string]any{"type": "chat", "message": message})
+		return true
+	}
+	return hub
+}
+func chatMessages(p *peer) []Message {
+	var messages []Message
+	for len(p.outgoing) > 0 {
+		var frame struct {
+			Type    string  `json:"type"`
+			Message Message `json:"message"`
+		}
+		_ = json.Unmarshal(<-p.outgoing, &frame)
+		if frame.Type == "chat" {
+			messages = append(messages, frame.Message)
+		}
+	}
+	return messages
+}
+func TestHubLiveOrderingAndReplacement(t *testing.T) {
+	hub := localTestHub()
 	p := testPeer(1)
 	hub.join(p)
 	for i := 0; i < 60; i++ {
 		hub.handle(p, command{Type: "chat", Text: "¡Hola, pingüinos!"}, time.Now().Add(time.Duration(i)*time.Second))
 	}
-	if len(hub.history) != 50 || hub.history[0].Sequence != 11 || hub.history[49].Sequence != 60 {
-		t.Fatal("historial sin orden o límite")
+	messages := chatMessages(p)
+	if len(messages) != 60 || messages[0].Sequence != 1 || messages[59].Sequence != 60 {
+		t.Fatal("mensajes en vivo sin orden")
 	}
 	replacement := testPeer(1)
 	hub.join(replacement)
@@ -47,20 +73,20 @@ func TestHubHistoryOrderingAndReplacement(t *testing.T) {
 	}
 }
 func TestValidationRateAndMovement(t *testing.T) {
-	hub := NewHub()
+	hub := localTestHub()
 	p := testPeer(1)
 	hub.join(p)
 	now := time.Now()
 	for _, text := range []string{"", strings.Repeat("x", 181), "hola\nmundo", "hola\u202emundo"} {
 		hub.handle(p, command{Type: "chat", Text: text}, now)
 	}
-	if len(hub.history) != 0 {
+	if len(chatMessages(p)) != 0 {
 		t.Fatal("texto inválido aceptado")
 	}
 	for i := 0; i < 10; i++ {
 		hub.handle(p, command{Type: "chat", Text: "hola"}, now)
 	}
-	if len(hub.history) != 3 {
+	if len(chatMessages(p)) != 3 {
 		t.Fatal("no se limita el envío")
 	}
 	hub.handle(p, command{Type: "move", X: 300, Y: 0}, now.Add(time.Second))
@@ -76,7 +102,7 @@ func TestValidationRateAndMovement(t *testing.T) {
 	}
 }
 func TestConcurrentMessagesHaveSingleSequence(t *testing.T) {
-	hub := NewHub()
+	hub := localTestHub()
 	peers := []*peer{testPeer(1), testPeer(2)}
 	for _, p := range peers {
 		hub.join(p)
@@ -92,10 +118,11 @@ func TestConcurrentMessagesHaveSingleSequence(t *testing.T) {
 		}(p)
 	}
 	workers.Wait()
-	if len(hub.history) != 6 {
+	messages := chatMessages(peers[0])
+	if len(messages) != 6 {
 		t.Fatal("mensajes perdidos")
 	}
-	for i, m := range hub.history {
+	for i, m := range messages {
 		if m.Sequence != uint64(i+1) {
 			t.Fatal("orden inconsistente")
 		}
@@ -131,7 +158,7 @@ func readType(t *testing.T, c *websocket.Conn, kind string) map[string]any {
 	}
 }
 func TestWebSocketAuthBroadcastAndOrigin(t *testing.T) {
-	server := httptest.NewServer(NewHub().Handler(testAuth{}))
+	server := httptest.NewServer(localTestHub().Handler(testAuth{}))
 	defer server.Close()
 	url := "ws" + strings.TrimPrefix(server.URL, "http")
 	var clients []*websocket.Conn

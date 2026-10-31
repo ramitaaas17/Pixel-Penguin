@@ -14,6 +14,7 @@ func _ready() -> void:
     margin.mouse_filter = Control.MOUSE_FILTER_IGNORE
     add_child(margin)
     UI.full_rect(margin)
+    margin.offset_bottom = -54
     var column := VBoxContainer.new()
     column.mouse_filter = Control.MOUSE_FILTER_IGNORE
     margin.add_child(column)

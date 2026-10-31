@@ -19,16 +19,20 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Players_ListPlayers_FullMethodName  = "/penguin.v1.Players/ListPlayers"
-	Players_GetPlayer_FullMethodName    = "/penguin.v1.Players/GetPlayer"
-	Players_CreatePlayer_FullMethodName = "/penguin.v1.Players/CreatePlayer"
-	Players_UpdateCoins_FullMethodName  = "/penguin.v1.Players/UpdateCoins"
+	Players_StartCoffeeGame_FullMethodName  = "/penguin.v1.Players/StartCoffeeGame"
+	Players_FinishCoffeeGame_FullMethodName = "/penguin.v1.Players/FinishCoffeeGame"
+	Players_ListPlayers_FullMethodName      = "/penguin.v1.Players/ListPlayers"
+	Players_GetPlayer_FullMethodName        = "/penguin.v1.Players/GetPlayer"
+	Players_CreatePlayer_FullMethodName     = "/penguin.v1.Players/CreatePlayer"
+	Players_UpdateCoins_FullMethodName      = "/penguin.v1.Players/UpdateCoins"
 )
 
 // PlayersClient is the client API for Players service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type PlayersClient interface {
+	StartCoffeeGame(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*CoffeePlan, error)
+	FinishCoffeeGame(ctx context.Context, in *FinishCoffeeRequest, opts ...grpc.CallOption) (*CoffeeResult, error)
 	ListPlayers(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*PlayerList, error)
 	GetPlayer(ctx context.Context, in *IdRequest, opts ...grpc.CallOption) (*Player, error)
 	CreatePlayer(ctx context.Context, in *CreatePlayerRequest, opts ...grpc.CallOption) (*Player, error)
@@ -41,6 +45,26 @@ type playersClient struct {
 
 func NewPlayersClient(cc grpc.ClientConnInterface) PlayersClient {
 	return &playersClient{cc}
+}
+
+func (c *playersClient) StartCoffeeGame(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*CoffeePlan, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CoffeePlan)
+	err := c.cc.Invoke(ctx, Players_StartCoffeeGame_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *playersClient) FinishCoffeeGame(ctx context.Context, in *FinishCoffeeRequest, opts ...grpc.CallOption) (*CoffeeResult, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CoffeeResult)
+	err := c.cc.Invoke(ctx, Players_FinishCoffeeGame_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *playersClient) ListPlayers(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*PlayerList, error) {
@@ -87,6 +111,8 @@ func (c *playersClient) UpdateCoins(ctx context.Context, in *UpdateCoinsRequest,
 // All implementations must embed UnimplementedPlayersServer
 // for forward compatibility.
 type PlayersServer interface {
+	StartCoffeeGame(context.Context, *Empty) (*CoffeePlan, error)
+	FinishCoffeeGame(context.Context, *FinishCoffeeRequest) (*CoffeeResult, error)
 	ListPlayers(context.Context, *Empty) (*PlayerList, error)
 	GetPlayer(context.Context, *IdRequest) (*Player, error)
 	CreatePlayer(context.Context, *CreatePlayerRequest) (*Player, error)
@@ -101,6 +127,12 @@ type PlayersServer interface {
 // pointer dereference when methods are called.
 type UnimplementedPlayersServer struct{}
 
+func (UnimplementedPlayersServer) StartCoffeeGame(context.Context, *Empty) (*CoffeePlan, error) {
+	return nil, status.Error(codes.Unimplemented, "method StartCoffeeGame not implemented")
+}
+func (UnimplementedPlayersServer) FinishCoffeeGame(context.Context, *FinishCoffeeRequest) (*CoffeeResult, error) {
+	return nil, status.Error(codes.Unimplemented, "method FinishCoffeeGame not implemented")
+}
 func (UnimplementedPlayersServer) ListPlayers(context.Context, *Empty) (*PlayerList, error) {
 	return nil, status.Error(codes.Unimplemented, "method ListPlayers not implemented")
 }
@@ -132,6 +164,42 @@ func RegisterPlayersServer(s grpc.ServiceRegistrar, srv PlayersServer) {
 		t.testEmbeddedByValue()
 	}
 	s.RegisterService(&Players_ServiceDesc, srv)
+}
+
+func _Players_StartCoffeeGame_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PlayersServer).StartCoffeeGame(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Players_StartCoffeeGame_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PlayersServer).StartCoffeeGame(ctx, req.(*Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Players_FinishCoffeeGame_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FinishCoffeeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PlayersServer).FinishCoffeeGame(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Players_FinishCoffeeGame_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PlayersServer).FinishCoffeeGame(ctx, req.(*FinishCoffeeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _Players_ListPlayers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -213,6 +281,14 @@ var Players_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "penguin.v1.Players",
 	HandlerType: (*PlayersServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "StartCoffeeGame",
+			Handler:    _Players_StartCoffeeGame_Handler,
+		},
+		{
+			MethodName: "FinishCoffeeGame",
+			Handler:    _Players_FinishCoffeeGame_Handler,
+		},
 		{
 			MethodName: "ListPlayers",
 			Handler:    _Players_ListPlayers_Handler,

@@ -20,6 +20,7 @@ type Server struct {
 	pb.UnimplementedPlayersServer
 	store    PlayerStore
 	sessions SessionLookup
+	Coffee   CoffeeGames
 }
 
 type SessionLookup interface {

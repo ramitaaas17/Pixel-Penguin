@@ -12,6 +12,8 @@ Cada servicio tiene su propia base de datos
 - Fase 4 agregamos registro, inicio de sesión y cierre de sesión
 - También tenemos chat y movimiento compartido en la plaza
 - En esta entrega agregamos mensajes en segundo plano con Apache Kafka
+- El chat en vivo también publica y consume mensajes mediante Kafka
+- Minijuego Café del Deshielo: acercarse a la cafetería y pulsar E para recoger ingredientes con clics, completar bebidas, avanzar por cuatro niveles y ganar monedas según los puntos. Tiene música y números pixelados de mayor tamaño. [Instrucciones y pruebas](docs/MINIJUEGO_CAFETERIA.md)
 
 ## Cómo iniciarlo
 
@@ -29,19 +31,20 @@ Para abrirlo en Godot se usa `project.godot` y F5
 
 ## Mensajes con Kafka
 
-Cada servicio tiene su tópico
+Los servicios y el chat tienen su tópico
 
 | Servicio | Tópico | Qué avisa |
 | --- | --- | --- |
 | Jugadores | pixelpenguin.jugadores | Cambios en jugadores |
 | Tienda | pixelpenguin.tienda | Cambios en productos |
 | Cafetería | pixelpenguin.cafeteria | Cambios en pedidos |
+| Chat | pixelpenguin.chat | Mensajes en vivo de la plaza |
 
-Los tópicos se crean al levantar Docker y tienen tres particiones cada uno
+Los tópicos se crean al levantar Docker. Los tres tópicos de cambios tienen tres particiones cada uno; el chat usa una partición para conservar el orden
 Los servicios se conectan a Kafka mediante REST Proxy dentro de la red de Docker
 No se agregaron paquetes nuevos a Go
 
-Cuando se crea, cambia o borra un registro se guarda también un mensaje pendiente en `message_outbox`
+Para los cambios de las bases de datos, cuando se crea, cambia o borra un registro se guarda también un mensaje pendiente en `message_outbox`
 Otro proceso del servicio lo manda a Kafka y después lo quita de pendientes
 Si Kafka falla el mensaje sigue guardado para intentar después
 
@@ -54,6 +57,17 @@ Esto deja un registro de cambios, todavía no realiza compras entre servicios
 Las tablas de mensajes se agregan al iniciar, también en bases que ya tenían datos
 Kafka guarda sus datos en el volumen `kafka-data`
 Esta entrega usa un solo servidor Kafka para pruebas locales
+
+## Chat en vivo con Kafka
+
+El mensaje sigue esta ruta: Godot → WebSocket → middleware → Kafka REST → tópico `pixelpenguin.chat` → consumidor del middleware → WebSocket → globos sobre los pingüinos.
+El servidor obtiene el nombre y el ID de la sesión, valida el texto y limita la frecuencia antes de publicar. El globo aparece después de consumir el mensaje desde Kafka. El movimiento no pasa por Kafka.
+
+No hay botón ni panel de historial. Tampoco se envían mensajes anteriores al entrar. Kafka conserva temporalmente los eventos de transporte, con retención configurada de una hora; esto no agrega historial al juego. A diferencia de los cambios de las bases, el chat no usa outbox/inbox ni entrega a jugadores desconectados.
+
+Si Kafka no está disponible, el chat avisa del fallo y el movimiento sigue funcionando. Se descartan mensajes con más de 15 segundos para evitar globos atrasados. No se garantiza entrega durante una caída y un timeout de publicación puede ser ambiguo.
+
+Detalles y pruebas: [Chat con Kafka](docs/CHAT_KAFKA.md).
 
 ## Comprobar la entrega
 

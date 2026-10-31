@@ -174,7 +174,11 @@ func _receive(data: Dictionary) -> void:
         "correction":
             _correctPosition(data.get("player", {}))
         "error":
-            _status(str(data.get("text", "No se pudo enviar el mensaje.")))
+            var notice := str(data.get("text", "No se pudo enviar el mensaje."))
+            _status(notice)
+            var scene := get_tree().current_scene
+            if scene.has_method("mostrar_aviso"):
+                scene.mostrar_aviso(notice)
 
 func _correctPosition(player: Dictionary) -> void:
     if is_instance_valid(localPlayer):

@@ -77,3 +77,11 @@ Los comercios quedan en consulta hasta completar las compras seguras de la fase 
 ## Chat y presencia real
 
 ChatPanel.gd reutiliza PixelUI, el tema y PixelButton; panel plegable a la izquierda, historial de 50 mensajes con scroll, campo de 180 caracteres y estado con tooltip. Enter enfoca y ESC pliega. Los invitados no publican mensajes. RemotePenguin.gd reutiliza sprite, escala, sombra y NameLabel del juego, sin NPC ni recursos gráficos nuevos. Capturas verificables y pruebas: docs/social y docs/CHAT_Y_PRESENCIA.md.
+
+## Minijuego de cafetería
+
+Café del Deshielo sustituye la consulta de catálogo en la entrada de la cafetería de la plaza. Usa CoffeeFrame y CoffeeColumn del tema compartido, PixelButton y Pixelify Sans. El dibujo de estación e iconos es original y se realiza en código sobre una cuadrícula entera; no se importaron paquetes ni fuentes. Capturas de Godot y Chromium en docs/minigames. Ver docs/MINIJUEGO_CAFETERIA.md para controles y verificación.
+
+Actualización del minijuego: el pedido ahora usa tarjetas con iconos y cantidades. Los ingredientes caen y se recogen con el mouse. Las variaciones CoffeeTitle, CoffeeText, CoffeeNumber y CoffeeSmall usan el archivo autorizado Pixelify Sans con peso 600 y tamaños 28/24/22, sin afectar la tipografía de la plaza. Los sprites se amplían por factores enteros 2 y 4; los objetivos son de 72 × 72 píxeles. Se conserva el tema y PixelButton. Capturas actuales y prueba de clics reales en docs/minigames.
+
+Actualización de espacio y números: el minijuego usa CoffeeWideMargin para ocupar 944 × 584 dentro del lienzo existente. La zona de caída tiene 448 px de alto. PixelDigits.gd dibuja dígitos originales de 5 × 7 mediante rectángulos enteros a escala 5; no se añade una fuente externa ni se modifica la fuente de la plaza. La música es una composición original regenerable en tools/make_coffee_music.py. El resultado y las monedas proceden de una validación del servidor.

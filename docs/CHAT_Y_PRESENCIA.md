@@ -1,5 +1,7 @@
 # Chat y presencia de la plaza
 
+> Actualización del 30 de octubre de 2026: el chat ahora pasa por Kafka, usa una barra inferior sin historial visible y muestra globos temporales. El protocolo de bienvenida devuelve historial vacío. Este documento conserva las pruebas de la implementación anterior; consultar [Chat con Kafka](CHAT_KAFKA.md) para el funcionamiento actual.
+
 Por petición del usuario se adelantó el chat y la presencia respecto de las compras seguras. Se mantiene el catálogo en consulta. No hay NPC activos: los pingüinos remotos corresponden exclusivamente a sesiones conectadas a la sala.
 
 ## Uso

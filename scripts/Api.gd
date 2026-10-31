@@ -22,7 +22,8 @@ func _peticion(metodo: int, ruta: String, cuerpo, callback: Callable) -> void:
                 datos = json.data
         if codigo == 401 and ruta not in ["/auth/login", "/auth/register", "/auth/logout"] and not requestToken.is_empty() and requestToken == EstadoJuego.sessionToken:
             EstadoJuego.clearSession(true)
-        callback.call(codigo, datos)
+        if callback.is_valid():
+            callback.call(codigo, datos)
     )
     var encabezados := ["Content-Type: application/json"]
     if not requestToken.is_empty():
@@ -33,7 +34,8 @@ func _peticion(metodo: int, ruta: String, cuerpo, callback: Callable) -> void:
     var error := http.request(getBaseUrl() + ruta, encabezados, metodo, cuerpo_texto)
     if error != OK:
         http.queue_free()
-        callback.call(-1, null)
+        if callback.is_valid():
+            callback.call(-1, null)
 
 func jugadores_listar(callback: Callable) -> void:
     _peticion(HTTPClient.METHOD_GET, "/jugadores", null, callback)
@@ -61,3 +63,17 @@ func sessionInfo(callback: Callable) -> void:
 
 func logout(callback: Callable) -> void:
     _peticion(HTTPClient.METHOD_POST, "/auth/logout", null, callback)
+
+func startCoffeeGame(callback: Callable) -> void:
+    _peticion(HTTPClient.METHOD_POST, "/minijuegos/cafe", {}, callback)
+
+func finishCoffeeGame(run_id: String, actions: Array, callback: Callable) -> void:
+    var owner_token := EstadoJuego.sessionToken
+    _peticion(HTTPClient.METHOD_POST, "/minijuegos/cafe/%s/finalizar" % run_id, {"actions":actions}, func(code: int, data):
+        if code == 200 and data is Dictionary and owner_token == EstadoJuego.sessionToken:
+            EstadoJuego.actualizar_monedas(int(data.balance))
+            if str(EstadoJuego.pendingCoffee.get("run_id", "")) == run_id:
+                EstadoJuego.pendingCoffee = {}
+        if callback.is_valid():
+            callback.call(code, data)
+    )

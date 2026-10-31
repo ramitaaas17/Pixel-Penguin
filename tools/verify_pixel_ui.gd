@@ -86,7 +86,7 @@ func run() -> void:
     for button in buy_buttons:
         if button.disabled:
             disabled_count += 1
-    check(disabled_count == 3, "Cafetería conserva el menú en modo consulta")
+    check(cafe.panel_comercio.name == "CoffeeMinigame" and cafe.panel_comercio.state == "intro" and cafe.panel_comercio.rain.active.size() == 4, "Cafetería abre demostración visual antes de comenzar")
     await capture("cafeteria-pixel.png")
     cafe._cerrar_panel()
     await settle()

@@ -40,7 +40,12 @@ func _pasear() -> void:
     _actualizar_hud()
 
 func canInteract() -> bool:
-    return not is_instance_valid(authPanel) or not authPanel.isOpen()
+    if is_instance_valid(authPanel) and authPanel.isOpen():
+        return false
+    for commerce in get_tree().get_nodes_in_group("commerce"):
+        if is_instance_valid(commerce.panel_comercio):
+            return false
+    return true
 
 func _onSessionStarted() -> void:
     _pasear()

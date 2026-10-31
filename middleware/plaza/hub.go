@@ -38,11 +38,12 @@ type command struct {
 	Left   bool    `json:"left,omitempty"`
 }
 type Hub struct {
-	mu       sync.Mutex
-	peers    map[int64]*peer
-	history  []Message
-	sequence uint64
-	epoch    string
+	mu        sync.Mutex
+	peers     map[int64]*peer
+	publish   func(Message) bool
+	delivered uint64
+	sequence  uint64
+	epoch     string
 }
 
 func NewHub() *Hub {
@@ -70,8 +71,7 @@ func (hub *Hub) join(p *peer) bool {
 		players = append(players, member.player)
 	}
 	sort.Slice(players, func(i, j int) bool { return players[i].ID < players[j].ID })
-	history := append([]Message{}, hub.history...)
-	p.send(map[string]any{"type": "welcome", "epoch": hub.epoch, "selfId": p.player.ID, "players": players, "history": history})
+	p.send(map[string]any{"type": "welcome", "epoch": hub.epoch, "selfId": p.player.ID, "players": players, "history": []Message{}})
 	hub.broadcast(map[string]any{"type": "joined", "player": p.player})
 	return true
 }
@@ -130,11 +130,9 @@ func (hub *Hub) handle(p *peer, request command, now time.Time) {
 		p.chatCredit--
 		hub.sequence++
 		message := Message{Sequence: hub.sequence, PlayerID: p.player.ID, Name: p.player.Name, Text: text, SentAt: now.UnixMilli()}
-		hub.history = append(hub.history, message)
-		if len(hub.history) > 50 {
-			hub.history = hub.history[len(hub.history)-50:]
+		if hub.publish == nil || !hub.publish(message) {
+			p.problem("Chat no disponible: Kafka está reconectando o está ocupado. Inténtalo de nuevo.")
 		}
-		hub.broadcast(map[string]any{"type": "chat", "message": message})
 	case "move":
 		elapsed := now.Sub(p.lastMove).Seconds()
 		if elapsed < 0.08 {

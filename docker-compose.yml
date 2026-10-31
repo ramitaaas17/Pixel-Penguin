@@ -32,6 +32,7 @@ services:
         for service in jugadores tienda cafeteria; do
           /opt/kafka/bin/kafka-topics.sh --bootstrap-server kafka:9092 --create --if-not-exists --topic pixelpenguin.$$service --partitions 3 --replication-factor 1
         done
+        /opt/kafka/bin/kafka-topics.sh --bootstrap-server kafka:9092 --create --if-not-exists --topic pixelpenguin.chat --partitions 1 --replication-factor 1 --config retention.ms=3600000
     networks: [appnet]
   kafka-rest:
     image: confluentinc/cp-kafka-rest:8.0.0
@@ -216,6 +217,10 @@ services:
       dockerfile: middleware/Dockerfile
     environment:
       GRPC_GATEWAY_ADDR: gateway:9090
+      KAFKA_REST_URL: http://kafka-rest:8082
+    depends_on:
+      kafka-rest:
+        condition: service_started
     healthcheck:
       test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:8000/heartbeat"]
       interval: 5s
