@@ -34,7 +34,7 @@ No se afirma un objetivo de FPS sin medirlo en el equipo de destino.
 ## Originales y reversión
 mapaBase.tscn, scenes/edificios, scenes/personaje y todos los PNG se conservan.
 Se modifica project.godot y se reparan únicamente las rutas de recursos en las cinco escenas antiguas de la raíz (Cafeteria, CaminarDerecha, Club, Fuente y Tienda).
-Sus copias anteriores se guardan en .plaza-backup/*.original; los diseños originales siguen intactos.
+Los respaldos antiguos se pueden consultar en Git: `git show bf42898:.plaza-backup/<archivo>.original`. Los diseños originales siguen intactos.
 Para regresar al mapa anterior, cambiar run/main_scene a res://mapaBase.tscn.
 
 ## Controles de acabado

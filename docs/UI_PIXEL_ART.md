@@ -63,7 +63,7 @@ de esos detalles requiere revisar los sprites originales por separado.
 No afirmar que esos PNG han sido remasterizados.
 
 ## Copias
-Los archivos de código/configuración y escenas modificados se respaldan en .ui-backup.
+Los respaldos antiguos de código/configuración y escenas se pueden consultar en Git: `git show bf42898:.ui-backup/<ruta>.original`.
 Los PNG originales del juego permanecen intactos.
 
 ## Autenticación integrada
